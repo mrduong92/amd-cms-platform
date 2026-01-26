@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # PHP-FPM Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nmtauto_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - nmtauto_network
+    depends_on:
+      - db
+
+  # Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: nmtauto_nginx
+    restart: unless-stopped
+    ports:
+      - "8001:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - nmtauto_network
+    depends_on:
+      - app
+
+  # MySQL Service
+  db:
+    image: mysql:8.0
+    container_name: nmtauto_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: nmtauto
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: nmtauto
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - nmtauto_network
+
+  # phpMyAdmin Service
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: nmtauto_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: secret
+    networks:
+      - nmtauto_network
+    depends_on:
+      - db
+
+  # Node.js for frontend build
+  node:
+    image: node:20-alpine
+    container_name: nmtauto_node
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - nmtauto_network
+
+networks:
+  nmtauto_network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
