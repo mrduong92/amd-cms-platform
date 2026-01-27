@@ -17,6 +17,29 @@
 
         <!-- End navbar links -->
         <ul class="navbar-nav ms-auto">
+            <!-- Cache Clear Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-bs-toggle="dropdown" href="#" title="Xóa Cache">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <span class="dropdown-header">Quản lý Cache</span>
+                    <div class="dropdown-divider"></div>
+                    <form action="{{ route('admin.cache.clear-homepage') }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="dropdown-item">
+                            <i class="bi bi-house me-2"></i> Xóa cache trang chủ
+                        </button>
+                    </form>
+                    <form action="{{ route('admin.cache.clear-all') }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="dropdown-item">
+                            <i class="bi bi-trash me-2"></i> Xóa tất cả cache
+                        </button>
+                    </form>
+                </div>
+            </li>
+
             <!-- Notifications Dropdown -->
             @php
                 $newInquiries = \App\Models\ContactInquiry::new()->count();

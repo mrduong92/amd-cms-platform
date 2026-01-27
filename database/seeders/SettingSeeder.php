@@ -192,6 +192,62 @@ class SettingSeeder extends Seeder
                 'order' => 4,
             ],
 
+            // Homepage Settings
+            [
+                'key' => 'home_services_title',
+                'value' => 'Giải pháp công nghiệp',
+                'type' => 'text',
+                'group' => 'homepage',
+                'label' => 'Tiêu đề mục Dịch vụ',
+                'description' => 'Tiêu đề hiển thị ở mục dịch vụ trang chủ',
+                'order' => 1,
+            ],
+            [
+                'key' => 'home_products_title',
+                'value' => 'Danh mục sản phẩm',
+                'type' => 'text',
+                'group' => 'homepage',
+                'label' => 'Tiêu đề mục Sản phẩm',
+                'description' => 'Tiêu đề hiển thị ở mục sản phẩm trang chủ',
+                'order' => 2,
+            ],
+            [
+                'key' => 'home_news_title',
+                'value' => 'Tin tức & Dự án mới nhất',
+                'type' => 'text',
+                'group' => 'homepage',
+                'label' => 'Tiêu đề mục Tin tức',
+                'description' => 'Tiêu đề hiển thị ở mục tin tức trang chủ',
+                'order' => 3,
+            ],
+            [
+                'key' => 'home_news_description',
+                'value' => 'Khám phá cách chúng tôi đang thay đổi vận hành công nghiệp.',
+                'type' => 'textarea',
+                'group' => 'homepage',
+                'label' => 'Mô tả mục Tin tức',
+                'description' => 'Mô tả hiển thị ở mục tin tức trang chủ',
+                'order' => 4,
+            ],
+            [
+                'key' => 'home_partners_title',
+                'value' => 'Đối tác tin cậy của chúng tôi',
+                'type' => 'text',
+                'group' => 'homepage',
+                'label' => 'Tiêu đề mục Đối tác',
+                'description' => 'Tiêu đề hiển thị ở mục đối tác trang chủ',
+                'order' => 5,
+            ],
+            [
+                'key' => 'home_social_title',
+                'value' => 'Mạng Xã Hội',
+                'type' => 'text',
+                'group' => 'homepage',
+                'label' => 'Tiêu đề mục Mạng xã hội',
+                'description' => 'Tiêu đề hiển thị ở mục mạng xã hội trang chủ',
+                'order' => 6,
+            ],
+
             // Footer Settings
             [
                 'key' => 'footer_about',

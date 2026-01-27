@@ -107,6 +107,14 @@
                     </a>
                 </li>
 
+                <!-- Social Posts -->
+                <li class="nav-item">
+                    <a href="{{ route('admin.social-posts.index') }}" class="nav-link {{ request()->routeIs('admin.social-posts.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-share"></i>
+                        <p>Mạng xã hội</p>
+                    </a>
+                </li>
+
                 <!-- Media -->
                 <li class="nav-item">
                     <a href="{{ route('admin.media.index') }}" class="nav-link {{ request()->routeIs('admin.media.*') ? 'active' : '' }}">

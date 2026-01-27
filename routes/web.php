@@ -5,12 +5,16 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Frontend\PostController;
 use App\Http\Controllers\Frontend\ProductController;
+use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\Frontend\ServiceController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Frontend Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Search
+Route::get('/tim-kiem', [SearchController::class, 'index'])->name('search');
 
 // Products
 Route::get('/san-pham', [ProductController::class, 'index'])->name('products.index');

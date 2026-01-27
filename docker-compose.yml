@@ -65,6 +65,8 @@ services:
       - db
 
   # Node.js for frontend build
+  # Run with: docker compose run --rm node npm <command>
+  # Or start dev server: docker compose run --rm node npm run dev
   node:
     image: node:20-alpine
     container_name: nmtauto_node
@@ -73,6 +75,8 @@ services:
       - ./:/var/www
     networks:
       - nmtauto_network
+    profiles:
+      - tools
 
 networks:
   nmtauto_network:

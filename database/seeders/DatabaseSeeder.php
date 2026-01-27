@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             SettingSeeder::class,
             SampleDataSeeder::class,
+            SocialPostSeeder::class,
         ]);
     }
 }

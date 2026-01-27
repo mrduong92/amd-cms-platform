@@ -117,32 +117,6 @@
     </div>
 </section>
 
-<!-- Services Section -->
-@if($services->count() > 0)
-<section class="py-24 bg-slate-50 dark:bg-slate-900/50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
-        <h2 class="font-display text-4xl font-bold mb-4">Giải pháp công nghiệp</h2>
-        <div class="w-20 h-1.5 bg-primary mx-auto rounded-full"></div>
-    </div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @foreach($services as $service)
-            <a href="{{ route('services.show', $service->slug) }}" class="group bg-white dark:bg-slate-800 p-8 rounded-2xl hover:bg-primary transition-all duration-300 border border-slate-200 dark:border-slate-700">
-                <div class="w-14 h-14 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center mb-6 shadow-sm group-hover:bg-white">
-                    <span class="material-symbols-outlined text-primary text-3xl">{{ $service->icon ?? 'settings' }}</span>
-                </div>
-                <h3 class="font-display text-xl font-bold mb-4 group-hover:text-white uppercase text-sm">{{ $service->name }}</h3>
-                <p class="text-slate-600 dark:text-slate-400 mb-6 group-hover:text-white/90">{{ $service->short_description ?? Str::limit(strip_tags($service->description), 100) }}</p>
-                <span class="inline-flex items-center text-primary group-hover:text-white font-bold transition-colors">
-                    Xem thêm <span class="material-symbols-outlined ml-2 text-sm">arrow_forward</span>
-                </span>
-            </a>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
-
 <!-- About/Core Values Section -->
 <section class="py-24 bg-slate-50 dark:bg-slate-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -167,7 +141,7 @@
                 </h2>
 
                 @if($aboutPage && $aboutPage->content)
-                <div class="prose dark:prose-invert max-w-none">
+                <div class="prose dark:prose-invert max-w-none prose-h4:mt-0 prose-h4:mb-1">
                     {!! $aboutPage->content !!}
                 </div>
                 @else
@@ -218,7 +192,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mb-12">
             <div>
-                <h2 class="font-display text-4xl font-bold mb-2">Danh mục sản phẩm</h2>
+                <h2 class="font-display text-4xl font-bold mb-2">{{ setting('home_products_title', 'Danh mục sản phẩm') }}</h2>
                 <div class="w-20 h-1.5 bg-primary rounded-full"></div>
             </div>
             <a class="flex items-center text-primary font-bold hover:gap-2 transition-all" href="{{ route('products.index') }}">
@@ -317,8 +291,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-end mb-16">
             <div>
-                <h2 class="font-display text-4xl font-bold mb-4">Tin tức & Dự án mới nhất</h2>
-                <p class="text-slate-600 dark:text-slate-400">Khám phá cách chúng tôi đang thay đổi vận hành công nghiệp.</p>
+                <h2 class="font-display text-4xl font-bold mb-4">{{ setting('home_news_title', 'Tin tức & Dự án mới nhất') }}</h2>
+                <p class="text-slate-600 dark:text-slate-400">{{ setting('home_news_description', 'Khám phá cách chúng tôi đang thay đổi vận hành công nghiệp.') }}</p>
             </div>
             <a class="hidden md:flex items-center text-primary font-bold hover:underline" href="{{ route('posts.index') }}">
                 Xem tất cả bài viết <span class="material-symbols-outlined ml-2">east</span>
@@ -376,10 +350,102 @@
     </div>
 </section>
 
+<!-- Social Media Feed Section -->
+@if($socialPosts->count() > 0)
+@php
+    $platforms = $socialPosts->pluck('platform')->unique()->values();
+@endphp
+<section class="py-24 bg-white dark:bg-background-dark overflow-hidden" x-data="{ activeTab: 'all' }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
+            <div>
+                <h2 class="font-display text-4xl font-bold mb-4">{{ setting('home_social_title', 'Mạng Xã Hội') }}</h2>
+                <div class="w-20 h-1.5 bg-primary rounded-full mb-6"></div>
+                <div class="flex items-center gap-6 text-sm font-bold uppercase">
+                    <button @click="activeTab = 'all'" :class="activeTab === 'all' ? 'social-tab-active' : 'social-tab-inactive'" class="pb-2 flex items-center gap-2">Tất cả</button>
+                    @if($platforms->contains('facebook'))
+                    <button @click="activeTab = 'facebook'" :class="activeTab === 'facebook' ? 'social-tab-active' : 'social-tab-inactive'" class="pb-2 flex items-center gap-2">Facebook</button>
+                    @endif
+                    @if($platforms->contains('youtube'))
+                    <button @click="activeTab = 'youtube'" :class="activeTab === 'youtube' ? 'social-tab-active' : 'social-tab-inactive'" class="pb-2 flex items-center gap-2">Youtube</button>
+                    @endif
+                    @if($platforms->contains('tiktok'))
+                    <button @click="activeTab = 'tiktok'" :class="activeTab === 'tiktok' ? 'social-tab-active' : 'social-tab-inactive'" class="pb-2 flex items-center gap-2">Tiktok</button>
+                    @endif
+                    @if($platforms->contains('instagram'))
+                    <button @click="activeTab = 'instagram'" :class="activeTab === 'instagram' ? 'social-tab-active' : 'social-tab-inactive'" class="pb-2 flex items-center gap-2">Instagram</button>
+                    @endif
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="socialSlider.slidePrev()" class="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button onclick="socialSlider.slideNext()" class="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+            </div>
+        </div>
+        <div class="relative">
+            <div class="swiper social-swiper">
+                <div class="swiper-wrapper pb-8">
+                    @foreach($socialPosts as $post)
+                    <div class="swiper-slide" x-show="activeTab === 'all' || activeTab === '{{ $post->platform }}'">
+                        <a href="{{ $post->post_url ?: '#' }}" target="{{ $post->post_url ? '_blank' : '_self' }}" class="block group">
+                            <div class="relative aspect-square overflow-hidden rounded-2xl bg-slate-200 dark:bg-slate-800">
+                                @if($post->image)
+                                <img alt="{{ $post->title ?: 'Social Post' }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="{{ asset('storage/' . $post->image) }}"/>
+                                @else
+                                <div class="w-full h-full bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-700 dark:to-slate-800"></div>
+                                @endif
+                                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
+
+                                {{-- Platform Icon Badge --}}
+                                <div class="absolute top-4 left-4 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+                                    @switch($post->platform)
+                                        @case('facebook')
+                                            <svg class="w-5 h-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                                            @break
+                                        @case('youtube')
+                                            <svg class="w-6 h-6 text-[#FF0000]" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.377.505 9.377.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                            @break
+                                        @case('tiktok')
+                                            <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.03 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.9-.32-1.98-.23-2.81.31-.75.42-1.24 1.25-1.33 2.1-.1.7.1 1.41.54 1.96.44.54 1.13.88 1.84.91.7.03 1.43-.24 1.92-.76.46-.48.69-1.14.68-1.81.01-4.71 0-9.42 0-14.13z"/></svg>
+                                            @break
+                                        @case('instagram')
+                                            <svg class="w-5 h-5 text-[#E4405F]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                                            @break
+                                    @endswitch
+                                </div>
+
+                                {{-- Play button for video platforms --}}
+                                @if(in_array($post->platform, ['youtube', 'tiktok']))
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-white text-6xl opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all">play_circle</span>
+                                </div>
+                                @endif
+
+                                {{-- Description overlay --}}
+                                @if($post->description)
+                                <div class="absolute bottom-4 left-4 right-4">
+                                    <p class="text-white text-sm font-medium line-clamp-2">{{ $post->description }}</p>
+                                </div>
+                                @endif
+                            </div>
+                        </a>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endif
+
 <!-- Partners Section -->
 <section class="py-16 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h3 class="text-center text-slate-400 font-bold uppercase tracking-widest text-xs mb-10">Đối tác tin cậy của chúng tôi</h3>
+        <h3 class="text-center text-slate-400 font-bold uppercase tracking-widest text-xs mb-10">{{ setting('home_partners_title', 'Đối tác tin cậy của chúng tôi') }}</h3>
         @if($partners->count() > 0)
         <div class="flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-70 hover:opacity-100 transition-opacity duration-500">
             @foreach($partners as $partner)
@@ -451,5 +517,29 @@
             });
         });
     });
+
+    // Social Media Slider
+    let socialSlider = null;
+    if (document.querySelector('.social-swiper')) {
+        socialSlider = new Swiper('.social-swiper', {
+            slidesPerView: 1.2,
+            spaceBetween: 16,
+            grabCursor: true,
+            breakpoints: {
+                640: {
+                    slidesPerView: 2.2,
+                    spaceBetween: 20,
+                },
+                768: {
+                    slidesPerView: 3.2,
+                    spaceBetween: 24,
+                },
+                1024: {
+                    slidesPerView: 4,
+                    spaceBetween: 24,
+                },
+            },
+        });
+    }
 </script>
 @endpush

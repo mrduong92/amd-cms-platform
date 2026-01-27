@@ -22,6 +22,10 @@
     <!-- Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
+
     <!-- Favicon -->
     @if(setting('favicon'))
     <link rel="icon" href="{{ asset('storage/' . setting('favicon')) }}" type="image/x-icon">
@@ -93,10 +97,13 @@
 
     @include('frontend.components.footer')
 
+    <!-- Social Media Widget -->
+    @include('frontend.components.social-widget')
+
     <!-- Dark Mode Toggle -->
-    <button class="fixed bottom-8 right-8 w-14 h-14 bg-white dark:bg-slate-800 rounded-full shadow-2xl flex items-center justify-center border border-slate-200 dark:border-slate-700 z-[100] hover:scale-110 transition-transform" onclick="document.documentElement.classList.toggle('dark')">
-        <span class="material-symbols-outlined dark:hidden">dark_mode</span>
-        <span class="material-symbols-outlined hidden dark:block">light_mode</span>
+    <button class="fixed bottom-8 right-8 w-12 h-12 bg-white dark:bg-slate-800 rounded-full shadow-2xl flex items-center justify-center border border-slate-200 dark:border-slate-700 z-30 hover:scale-110 transition-transform lg:z-[100]" onclick="document.documentElement.classList.toggle('dark')">
+        <span class="material-symbols-outlined dark:hidden text-xl">dark_mode</span>
+        <span class="material-symbols-outlined hidden dark:block text-xl">light_mode</span>
     </button>
 
     @stack('scripts')

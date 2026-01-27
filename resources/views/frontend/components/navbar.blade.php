@@ -26,6 +26,31 @@
             </a>
 
             <div class="hidden md:flex space-x-6 items-center">
+                <!-- Search Button -->
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" class="p-2 hover:text-primary transition-colors">
+                        <span class="material-symbols-outlined">search</span>
+                    </button>
+                    <div x-show="open" @click.away="open = false" x-cloak
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         class="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 p-4">
+                        <form action="{{ route('search') }}" method="GET">
+                            <div class="flex items-center gap-2">
+                                <input type="text" name="q" placeholder="Tìm kiếm sản phẩm, tin tức..."
+                                       class="flex-1 px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                                       required minlength="2">
+                                <button type="submit" class="p-2 bg-primary text-white rounded-lg hover:bg-orange-600 transition-colors">
+                                    <span class="material-symbols-outlined text-xl">search</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 @forelse($headerMenus as $menu)
                     @if($menu->children->count() > 0)
                     <!-- Dropdown Menu -->
@@ -90,6 +115,17 @@
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 max-h-[80vh] overflow-y-auto">
         <div class="px-4 py-4 space-y-1">
+            <!-- Mobile Search -->
+            <form action="{{ route('search') }}" method="GET" class="mb-4">
+                <div class="flex items-center gap-2">
+                    <input type="text" name="q" placeholder="Tìm kiếm..."
+                           class="flex-1 px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                           required minlength="2">
+                    <button type="submit" class="p-2 bg-primary text-white rounded-lg hover:bg-orange-600 transition-colors">
+                        <span class="material-symbols-outlined">search</span>
+                    </button>
+                </div>
+            </form>
             @forelse($headerMenus as $menu)
                 @if($menu->children->count() > 0)
                 <div class="mobile-dropdown">

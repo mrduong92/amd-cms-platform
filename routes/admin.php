@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\CacheController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\SocialPostController;
 use App\Http\Controllers\Admin\ContactInquiryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MediaController;
@@ -65,4 +67,12 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
 
     // Users
     Route::resource('users', UserController::class);
+
+    // Social Posts
+    Route::resource('social-posts', SocialPostController::class);
+    Route::post('social-posts/reorder', [SocialPostController::class, 'reorder'])->name('social-posts.reorder');
+
+    // Cache Management
+    Route::post('cache/clear-homepage', [CacheController::class, 'clearHomepage'])->name('cache.clear-homepage');
+    Route::post('cache/clear-all', [CacheController::class, 'clearAll'])->name('cache.clear-all');
 });
