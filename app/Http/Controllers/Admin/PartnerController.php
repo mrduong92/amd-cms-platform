@@ -26,14 +26,15 @@ class PartnerController extends Controller
             'name' => 'required|string|max:255',
             'url' => 'nullable|url|max:255',
             'is_active' => 'boolean',
-            'logo' => 'required|image|max:2048',
+            'logo' => 'required|string|max:500',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
         $validated['order'] = Partner::max('order') + 1;
 
-        if ($request->hasFile('logo')) {
-            $validated['logo'] = $request->file('logo')->store('partners', 'public');
+        // Handle logo from file manager (convert URL to storage path)
+        if (!empty($validated['logo'])) {
+            $validated['logo'] = $this->convertUrlToStoragePath($validated['logo']);
         }
 
         Partner::create($validated);
@@ -53,16 +54,20 @@ class PartnerController extends Controller
             'name' => 'required|string|max:255',
             'url' => 'nullable|url|max:255',
             'is_active' => 'boolean',
-            'logo' => 'nullable|image|max:2048',
+            'logo' => 'nullable|string|max:500',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
 
-        if ($request->hasFile('logo')) {
-            if ($partner->logo) {
-                Storage::disk('public')->delete($partner->logo);
+        // Handle logo from file manager
+        if (!empty($validated['logo'])) {
+            $newPath = $this->convertUrlToStoragePath($validated['logo']);
+            // Only update if it's a different image
+            if ($newPath !== $partner->logo) {
+                $validated['logo'] = $newPath;
+            } else {
+                unset($validated['logo']);
             }
-            $validated['logo'] = $request->file('logo')->store('partners', 'public');
         }
 
         $partner->update($validated);
@@ -73,10 +78,6 @@ class PartnerController extends Controller
 
     public function destroy(Partner $partner)
     {
-        if ($partner->logo) {
-            Storage::disk('public')->delete($partner->logo);
-        }
-
         $partner->delete();
 
         return redirect()->route('admin.partners.index')
@@ -90,5 +91,32 @@ class PartnerController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Convert full URL to storage path
+     */
+    private function convertUrlToStoragePath(?string $url): ?string
+    {
+        if (empty($url)) {
+            return null;
+        }
+
+        // If it's already a storage path (not a full URL), return as is
+        if (!str_starts_with($url, 'http')) {
+            // Remove leading slash if present
+            return ltrim($url, '/');
+        }
+
+        // Extract path from URL
+        $parsed = parse_url($url);
+        $path = $parsed['path'] ?? '';
+
+        // Remove /storage/ prefix if present
+        if (str_contains($path, '/storage/')) {
+            $path = substr($path, strpos($path, '/storage/') + 9);
+        }
+
+        return ltrim($path, '/');
     }
 }

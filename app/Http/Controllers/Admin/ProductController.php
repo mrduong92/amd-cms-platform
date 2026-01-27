@@ -52,21 +52,20 @@ class ProductController extends Controller
             'sale_price' => 'nullable|numeric|min:0',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|string|max:500',
             'specs' => 'nullable|array',
             'specs.*.name' => 'nullable|string|max:100',
             'specs.*.value' => 'nullable|string|max:255',
-            'gallery' => 'nullable|array',
-            'gallery.*' => 'image|max:2048',
+            'gallery' => 'nullable|string',
         ]);
 
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active');
         $validated['order'] = Product::max('order') + 1;
 
-        // Handle main image upload
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('products', 'public');
+        // Handle main image from file manager (convert URL to storage path)
+        if (!empty($validated['image'])) {
+            $validated['image'] = $this->convertUrlToStoragePath($validated['image']);
         }
 
         $product = Product::create($validated);
@@ -85,16 +84,19 @@ class ProductController extends Controller
             }
         }
 
-        // Handle gallery images
-        if ($request->hasFile('gallery')) {
-            foreach ($request->file('gallery') as $index => $file) {
-                $path = $file->store('products/gallery', 'public');
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => $path,
-                    'order' => $index,
-                    'is_primary' => $index === 0,
-                ]);
+        // Handle gallery images from file manager (comma-separated URLs)
+        if (!empty($request->gallery)) {
+            $galleryUrls = array_filter(explode(',', $request->gallery));
+            foreach ($galleryUrls as $index => $url) {
+                $path = $this->convertUrlToStoragePath(trim($url));
+                if ($path) {
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image' => $path,
+                        'order' => $index,
+                        'is_primary' => $index === 0,
+                    ]);
+                }
             }
         }
 
@@ -122,24 +124,25 @@ class ProductController extends Controller
             'sale_price' => 'nullable|numeric|min:0',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|string|max:500',
             'specs' => 'nullable|array',
             'specs.*.name' => 'nullable|string|max:100',
             'specs.*.value' => 'nullable|string|max:255',
-            'gallery' => 'nullable|array',
-            'gallery.*' => 'image|max:2048',
+            'gallery' => 'nullable|string',
         ]);
 
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active');
 
-        // Handle main image upload
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+        // Handle main image from file manager
+        if (!empty($validated['image'])) {
+            $newPath = $this->convertUrlToStoragePath($validated['image']);
+            // Only update if it's a different image
+            if ($newPath !== $product->image) {
+                $validated['image'] = $newPath;
+            } else {
+                unset($validated['image']);
             }
-            $validated['image'] = $request->file('image')->store('products', 'public');
         }
 
         $product->update($validated);
@@ -159,17 +162,20 @@ class ProductController extends Controller
             }
         }
 
-        // Handle new gallery images
-        if ($request->hasFile('gallery')) {
+        // Handle new gallery images from file manager
+        if (!empty($request->gallery)) {
+            $galleryUrls = array_filter(explode(',', $request->gallery));
             $lastOrder = $product->images()->max('order') ?? -1;
-            foreach ($request->file('gallery') as $index => $file) {
-                $path = $file->store('products/gallery', 'public');
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => $path,
-                    'order' => $lastOrder + $index + 1,
-                    'is_primary' => false,
-                ]);
+            foreach ($galleryUrls as $index => $url) {
+                $path = $this->convertUrlToStoragePath(trim($url));
+                if ($path) {
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image' => $path,
+                        'order' => $lastOrder + $index + 1,
+                        'is_primary' => false,
+                    ]);
+                }
             }
         }
 
@@ -179,15 +185,6 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        // Delete images
-        if ($product->image) {
-            Storage::disk('public')->delete($product->image);
-        }
-
-        foreach ($product->images as $image) {
-            Storage::disk('public')->delete($image->image);
-        }
-
         $product->delete();
 
         return redirect()->route('admin.products.index')
@@ -211,7 +208,6 @@ class ProductController extends Controller
             abort(404);
         }
 
-        Storage::disk('public')->delete($image->image);
         $image->delete();
 
         return response()->json(['success' => true]);
@@ -229,5 +225,32 @@ class ProductController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Convert full URL to storage path
+     */
+    private function convertUrlToStoragePath(?string $url): ?string
+    {
+        if (empty($url)) {
+            return null;
+        }
+
+        // If it's already a storage path (not a full URL), return as is
+        if (!str_starts_with($url, 'http')) {
+            // Remove leading slash if present
+            return ltrim($url, '/');
+        }
+
+        // Extract path from URL
+        $parsed = parse_url($url);
+        $path = $parsed['path'] ?? '';
+
+        // Remove /storage/ prefix if present
+        if (str_contains($path, '/storage/')) {
+            $path = substr($path, strpos($path, '/storage/') + 9);
+        }
+
+        return ltrim($path, '/');
     }
 }

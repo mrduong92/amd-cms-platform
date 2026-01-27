@@ -146,10 +146,56 @@
     <!-- AdminLTE 4 JS -->
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0-beta1/dist/js/adminlte.min.js"></script>
 
+    <!-- TinyMCE -->
+    <script src="https://cdn.tiny.cloud/1/4zt4ijr688a6rs60w6abrifsb6lsqm1yzlquu14lvdcsy1s2/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <!-- SortableJS for drag-and-drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
     <!-- Common Scripts -->
     <script>
         // CSRF Token for AJAX
         window.csrfToken = '{{ csrf_token() }}';
+
+        // Laravel Filemanager helper
+        function openFileBrowser(inputId, type = 'image') {
+            var route_prefix = '/filemanager';
+            window.open(route_prefix + '?type=' + type, 'FileManager', 'width=900,height=600');
+            window.SetUrl = function(items) {
+                var file_path = items.map(function(item) {
+                    return item.url;
+                }).join(',');
+                document.getElementById(inputId).value = file_path;
+                // Trigger preview update if exists
+                var previewId = inputId + '_preview';
+                var preview = document.getElementById(previewId);
+                if (preview && type === 'image') {
+                    preview.src = file_path;
+                    preview.style.display = 'block';
+                }
+            };
+        }
+
+        // Initialize TinyMCE for elements with class 'tinymce-editor'
+        function initTinyMCE(selector = '.tinymce-editor') {
+            tinymce.init({
+                selector: selector,
+                height: 400,
+                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                file_picker_callback: function(callback, value, meta) {
+                    var type = meta.filetype === 'image' ? 'image' : 'file';
+                    var route_prefix = '/filemanager';
+                    window.open(route_prefix + '?type=' + type, 'FileManager', 'width=900,height=600');
+                    window.SetUrl = function(items) {
+                        callback(items[0].url);
+                    };
+                },
+                relative_urls: false,
+                remove_script_host: false,
+                content_style: 'body { font-family: Inter, sans-serif; font-size: 14px; }',
+            });
+        }
 
         // Common AJAX setup
         document.addEventListener('DOMContentLoaded', function() {
@@ -160,6 +206,11 @@
                     bsAlert.close();
                 });
             }, 5000);
+
+            // Auto-initialize TinyMCE if elements exist
+            if (document.querySelector('.tinymce-editor')) {
+                initTinyMCE();
+            }
         });
     </script>
 

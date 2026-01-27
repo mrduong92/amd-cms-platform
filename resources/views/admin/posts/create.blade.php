@@ -21,7 +21,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="content" class="form-label">Nội dung</label>
-                        <textarea class="form-control" id="content" name="content" rows="15">{{ old('content') }}</textarea>
+                        <textarea class="form-control tinymce-editor @error('content') is-invalid @enderror" id="content" name="content">{{ old('content') }}</textarea>
+                        @error('content')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
             </div>
@@ -69,7 +70,18 @@
             <div class="card">
                 <div class="card-header"><h3 class="card-title">Hình ảnh</h3></div>
                 <div class="card-body">
-                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control @error('image') is-invalid @enderror" id="image" name="image" value="{{ old('image') }}" readonly>
+                            <button type="button" class="btn btn-outline-secondary" onclick="openFileBrowser('image', 'image')">
+                                <i class="bi bi-folder2-open"></i> Chọn ảnh
+                            </button>
+                        </div>
+                        @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div class="mt-2">
+                            <img id="image_preview" src="" alt="" class="img-thumbnail" style="max-width: 100%; display:none;">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card">
@@ -82,3 +94,11 @@
     </div>
 </form>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initTinyMCE('#content');
+    });
+</script>
+@endpush

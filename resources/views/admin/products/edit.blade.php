@@ -37,7 +37,7 @@
 
                         <div class="mb-3">
                             <label for="description" class="form-label">Mô tả chi tiết</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="10">{{ old('description', $product->description) }}</textarea>
+                            <textarea class="form-control tinymce-editor @error('description') is-invalid @enderror" id="description" name="description">{{ old('description', $product->description) }}</textarea>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -172,34 +172,39 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="image" class="form-label">Ảnh đại diện</label>
-                            @if($product->image)
-                                <div class="mb-2">
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-thumbnail" style="max-width: 200px;">
-                                </div>
-                            @endif
-                            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*">
+                            <div class="input-group">
+                                <input type="text" class="form-control @error('image') is-invalid @enderror" id="image" name="image" value="{{ old('image', $product->image) }}" readonly>
+                                <button type="button" class="btn btn-outline-secondary" onclick="openFileBrowser('image', 'image')">
+                                    <i class="bi bi-folder2-open"></i> Chọn ảnh
+                                </button>
+                            </div>
                             @error('image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="text-muted">Chọn ảnh mới để thay đổi</small>
+                            <div class="mt-2">
+                                <img id="image_preview" src="{{ $product->image ? asset('storage/' . $product->image) : '' }}" alt="" class="img-thumbnail" style="max-width: 200px; {{ $product->image ? '' : 'display:none;' }}">
+                            </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="gallery" class="form-label">Thêm ảnh vào thư viện</label>
-                            <input type="file" class="form-control @error('gallery') is-invalid @enderror" id="gallery" name="gallery[]" accept="image/*" multiple>
-                            @error('gallery')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label class="form-label">Thêm ảnh vào thư viện</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="gallery_input" placeholder="Chọn nhiều ảnh từ thư viện" readonly>
+                                <button type="button" class="btn btn-outline-secondary" onclick="openGalleryBrowser()">
+                                    <i class="bi bi-images"></i> Chọn ảnh
+                                </button>
+                            </div>
+                            <input type="hidden" name="gallery" id="gallery">
                         </div>
 
                         @if($product->images->count() > 0)
                             <label class="form-label">Thư viện ảnh hiện tại</label>
-                            <div class="row g-2">
-                                @foreach($product->images as $image)
-                                    <div class="col-4">
+                            <div class="row g-2" id="gallery-images">
+                                @foreach($product->images as $img)
+                                    <div class="col-4" data-id="{{ $img->id }}">
                                         <div class="position-relative">
-                                            <img src="{{ asset('storage/' . $image->image) }}" alt="" class="img-thumbnail w-100" style="height: 80px; object-fit: cover;">
-                                            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="deleteImage({{ $image->id }})">
+                                            <img src="{{ asset('storage/' . $img->image) }}" alt="" class="img-thumbnail w-100" style="height: 80px; object-fit: cover;">
+                                            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="deleteImage({{ $img->id }})">
                                                 <i class="bi bi-x"></i>
                                             </button>
                                         </div>
@@ -269,19 +274,44 @@
 
     function deleteImage(imageId) {
         if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
-            fetch(`{{ route('admin.products.images.delete', [$product->id, '']) }}/${imageId}`, {
+            fetch(`/admin/products/{{ $product->id }}/images/${imageId}`, {
                 method: 'DELETE',
                 headers: {
-                    'X-CSRF-TOKEN': window.csrfToken,
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Accept': 'application/json',
                 }
             }).then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    location.reload();
+                    document.querySelector(`[data-id="${imageId}"]`).remove();
                 }
             });
         }
     }
+
+    function openGalleryBrowser() {
+        window.open('/filemanager?type=image', 'FileManager', 'width=900,height=600');
+        window.SetUrl = function(items) {
+            var urls = items.map(function(item) {
+                return item.url;
+            });
+            document.getElementById('gallery_input').value = urls.length + ' ảnh đã chọn';
+            document.getElementById('gallery').value = urls.join(',');
+        };
+    }
+
+    // Update preview when image is selected
+    document.getElementById('image').addEventListener('change', function() {
+        var preview = document.getElementById('image_preview');
+        if (this.value) {
+            // Convert storage path to full URL
+            var url = this.value;
+            if (!url.startsWith('http')) {
+                url = '{{ asset("storage") }}/' + url.replace(/^\/?(storage\/)?/, '');
+            }
+            preview.src = url;
+            preview.style.display = 'block';
+        }
+    });
 </script>
 @endpush

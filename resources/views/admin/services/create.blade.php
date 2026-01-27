@@ -26,7 +26,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="description" class="form-label">Mô tả chi tiết</label>
-                            <textarea class="form-control" id="description" name="description" rows="8">{{ old('description') }}</textarea>
+                            <textarea class="form-control tinymce-editor @error('description') is-invalid @enderror" id="description" name="description">{{ old('description') }}</textarea>
+                            @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                     </div>
                 </div>
@@ -51,7 +52,16 @@
                         </div>
                         <div class="mb-3">
                             <label for="image" class="form-label">Hình ảnh</label>
-                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                            <div class="input-group">
+                                <input type="text" class="form-control @error('image') is-invalid @enderror" id="image" name="image" value="{{ old('image') }}" readonly>
+                                <button type="button" class="btn btn-outline-secondary" onclick="openFileBrowser('image', 'image')">
+                                    <i class="bi bi-folder2-open"></i> Chọn ảnh
+                                </button>
+                            </div>
+                            @error('image')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                            <div class="mt-2">
+                                <img id="image_preview" src="" alt="" class="img-thumbnail" style="max-width: 150px; display:none;">
+                            </div>
                         </div>
                         <div class="mb-3">
                             <div class="form-check form-switch">
@@ -71,3 +81,11 @@
         </div>
     </form>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initTinyMCE('#description');
+    });
+</script>
+@endpush

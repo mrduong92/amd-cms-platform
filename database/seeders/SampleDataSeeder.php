@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Menu;
+use App\Models\Page;
+use App\Models\Partner;
+use App\Models\Post;
 use App\Models\Product;
 use App\Models\ProductSpec;
 use App\Models\Service;
@@ -88,6 +91,8 @@ class SampleDataSeeder extends Seeder
 
         // Create Sample Products
         $lithiumCat = Category::where('name', 'Pin Lithium Xe Nâng')->first();
+        $solarCat = Category::where('name', 'Pin Lithium Năng Lượng Mặt Trời')->first();
+        $cameraCat = Category::where('name', 'Camera AI')->first();
 
         $products = [
             [
@@ -123,22 +128,67 @@ class SampleDataSeeder extends Seeder
                 'short_description' => 'Pin lithium nhỏ gọn cho xe nâng tay điện',
                 'description' => '<p>Dòng pin lithium nhỏ gọn phù hợp cho xe nâng tay điện và các thiết bị vận chuyển nhẹ.</p>',
                 'price' => 18000000,
-                'is_featured' => false,
+                'is_featured' => true,
                 'order' => 3,
+            ],
+            [
+                'category_id' => $solarCat->id,
+                'name' => 'Hệ thống lưu trữ 10kWh',
+                'short_description' => 'Hệ thống lưu trữ năng lượng mặt trời gia đình',
+                'description' => '<p>Hệ thống lưu trữ năng lượng mặt trời 10kWh phù hợp cho hộ gia đình và văn phòng nhỏ.</p>',
+                'badge' => 'Mới',
+                'price' => 65000000,
+                'is_featured' => true,
+                'order' => 4,
+            ],
+            [
+                'category_id' => $solarCat->id,
+                'name' => 'Hệ thống lưu trữ 50kWh',
+                'short_description' => 'Hệ thống lưu trữ năng lượng công nghiệp',
+                'description' => '<p>Hệ thống lưu trữ năng lượng 50kWh cho nhà máy và doanh nghiệp lớn.</p>',
+                'price' => 280000000,
+                'is_featured' => true,
+                'order' => 5,
+            ],
+            [
+                'category_id' => $cameraCat->id,
+                'name' => 'Camera AI Nhận diện Khuôn mặt',
+                'short_description' => 'Camera an ninh thông minh với AI nhận diện khuôn mặt',
+                'description' => '<p>Camera tích hợp AI nhận diện khuôn mặt với độ chính xác cao, phù hợp cho văn phòng và nhà máy.</p>',
+                'badge' => 'Hot',
+                'price' => 8500000,
+                'is_featured' => true,
+                'order' => 6,
             ],
         ];
 
         foreach ($products as $prod) {
             $product = Product::create($prod);
 
-            // Add sample specs
-            $specs = [
-                ['spec_name' => 'Điện áp', 'spec_value' => str_contains($prod['name'], '48V') ? '48V' : (str_contains($prod['name'], '80V') ? '80V' : '24V'), 'order' => 1],
-                ['spec_name' => 'Dung lượng', 'spec_value' => str_contains($prod['name'], '200Ah') ? '200Ah' : (str_contains($prod['name'], '300Ah') ? '300Ah' : '100Ah'), 'order' => 2],
-                ['spec_name' => 'Công nghệ', 'spec_value' => 'LiFePO4 (LFP)', 'order' => 3],
-                ['spec_name' => 'Chu kỳ sạc', 'spec_value' => '3000+', 'order' => 4],
-                ['spec_name' => 'Bảo hành', 'spec_value' => '3 năm', 'order' => 5],
-            ];
+            // Add sample specs based on category
+            if ($prod['category_id'] == $lithiumCat->id) {
+                $specs = [
+                    ['spec_name' => 'Điện áp', 'spec_value' => str_contains($prod['name'], '48V') ? '48V' : (str_contains($prod['name'], '80V') ? '80V' : '24V'), 'order' => 1],
+                    ['spec_name' => 'Dung lượng', 'spec_value' => str_contains($prod['name'], '200Ah') ? '200Ah' : (str_contains($prod['name'], '300Ah') ? '300Ah' : '100Ah'), 'order' => 2],
+                    ['spec_name' => 'Công nghệ', 'spec_value' => 'LiFePO4 (LFP)', 'order' => 3],
+                    ['spec_name' => 'Chu kỳ sạc', 'spec_value' => '3000+', 'order' => 4],
+                    ['spec_name' => 'Bảo hành', 'spec_value' => '3 năm', 'order' => 5],
+                ];
+            } elseif ($prod['category_id'] == $solarCat->id) {
+                $specs = [
+                    ['spec_name' => 'Dung lượng', 'spec_value' => str_contains($prod['name'], '10kWh') ? '10kWh' : '50kWh', 'order' => 1],
+                    ['spec_name' => 'Công nghệ', 'spec_value' => 'LiFePO4', 'order' => 2],
+                    ['spec_name' => 'Hiệu suất', 'spec_value' => '95%+', 'order' => 3],
+                    ['spec_name' => 'Bảo hành', 'spec_value' => '10 năm', 'order' => 4],
+                ];
+            } else {
+                $specs = [
+                    ['spec_name' => 'Độ phân giải', 'spec_value' => '4K Ultra HD', 'order' => 1],
+                    ['spec_name' => 'AI', 'spec_value' => 'Nhận diện khuôn mặt', 'order' => 2],
+                    ['spec_name' => 'Tầm nhìn đêm', 'spec_value' => '30m', 'order' => 3],
+                    ['spec_name' => 'Bảo hành', 'spec_value' => '2 năm', 'order' => 4],
+                ];
+            }
 
             foreach ($specs as $spec) {
                 ProductSpec::create(array_merge($spec, ['product_id' => $product->id]));
@@ -221,14 +271,244 @@ class SampleDataSeeder extends Seeder
             Slider::create($slider);
         }
 
+        // Create Sample Posts
+        $newsCat = Category::where('name', 'Tin tức')->where('type', 'post')->first();
+        $projectCat = Category::where('name', 'Dự án')->where('type', 'post')->first();
+
+        $posts = [
+            [
+                'title' => 'NMT AUTO triển khai dự án chuyển đổi pin lithium cho kho logistics lớn',
+                'excerpt' => 'Dự án chuyển đổi 50 xe nâng từ pin axit sang pin lithium tại kho logistics ABC đã hoàn thành thành công, giúp tiết kiệm 40% chi phí năng lượng.',
+                'content' => '<p>Vừa qua, NMT AUTO đã hoàn thành thành công dự án chuyển đổi hệ thống pin cho 50 xe nâng tại kho logistics ABC, một trong những trung tâm logistics lớn nhất miền Nam.</p>
+                <h3>Thách thức</h3>
+                <p>Khách hàng đang sử dụng pin axit-chì truyền thống với nhiều hạn chế:</p>
+                <ul>
+                    <li>Thời gian sạc kéo dài 8-10 tiếng</li>
+                    <li>Chi phí bảo trì cao</li>
+                    <li>Phải thay pin giữa ca làm việc</li>
+                </ul>
+                <h3>Giải pháp</h3>
+                <p>NMT AUTO đã triển khai giải pháp pin lithium LFP với các ưu điểm:</p>
+                <ul>
+                    <li>Sạc nhanh chỉ 2-3 tiếng</li>
+                    <li>Không cần bảo trì</li>
+                    <li>Tuổi thọ gấp 3 lần pin axit</li>
+                </ul>
+                <h3>Kết quả</h3>
+                <p>Sau 6 tháng vận hành, khách hàng đã tiết kiệm được 40% chi phí năng lượng và tăng 25% năng suất vận hành.</p>',
+                'type' => 'project',
+                'category_id' => $projectCat?->id,
+                'is_featured' => true,
+                'published_at' => now()->subDays(5),
+                'user_id' => 1,
+            ],
+            [
+                'title' => 'Xu hướng sử dụng pin lithium trong ngành logistics năm 2024',
+                'excerpt' => 'Pin lithium đang trở thành xu hướng tất yếu trong ngành logistics với nhiều ưu điểm vượt trội so với pin truyền thống.',
+                'content' => '<p>Trong những năm gần đây, ngành logistics Việt Nam đang chứng kiến sự chuyển đổi mạnh mẽ từ pin axit-chì truyền thống sang pin lithium cho các thiết bị xử lý vật liệu.</p>
+                <h3>Tại sao pin lithium?</h3>
+                <p>Pin lithium mang lại nhiều lợi ích quan trọng:</p>
+                <ul>
+                    <li><strong>Hiệu suất cao:</strong> Hiệu suất năng lượng đạt trên 95%</li>
+                    <li><strong>Sạc nhanh:</strong> Chỉ cần 1-3 tiếng để sạc đầy</li>
+                    <li><strong>Tuổi thọ dài:</strong> 3000+ chu kỳ sạc, gấp 3-4 lần pin axit</li>
+                    <li><strong>Không bảo trì:</strong> Không cần bổ sung nước, không khí thải độc hại</li>
+                </ul>
+                <h3>Triển vọng tương lai</h3>
+                <p>Dự báo đến năm 2025, 60% xe nâng tại các kho logistics lớn sẽ sử dụng pin lithium.</p>',
+                'type' => 'news',
+                'category_id' => $newsCat?->id,
+                'is_featured' => true,
+                'published_at' => now()->subDays(10),
+                'user_id' => 1,
+            ],
+            [
+                'title' => 'Hướng dẫn bảo dưỡng xe nâng điện đúng cách',
+                'excerpt' => 'Bảo dưỡng định kỳ xe nâng điện giúp kéo dài tuổi thọ thiết bị và đảm bảo an toàn vận hành.',
+                'content' => '<p>Xe nâng điện là thiết bị quan trọng trong kho bãi, việc bảo dưỡng đúng cách sẽ giúp thiết bị hoạt động ổn định và bền bỉ.</p>
+                <h3>Lịch bảo dưỡng định kỳ</h3>
+                <ul>
+                    <li><strong>Hàng ngày:</strong> Kiểm tra mức nạp pin, vệ sinh xe</li>
+                    <li><strong>Hàng tuần:</strong> Kiểm tra lốp, phanh, hệ thống thủy lực</li>
+                    <li><strong>Hàng tháng:</strong> Kiểm tra tổng thể, bôi trơn các bộ phận</li>
+                    <li><strong>6 tháng:</strong> Bảo dưỡng lớn, thay dầu thủy lực</li>
+                </ul>
+                <h3>Lưu ý quan trọng</h3>
+                <p>Luôn sử dụng phụ tùng chính hãng và tuân thủ hướng dẫn của nhà sản xuất.</p>',
+                'type' => 'news',
+                'category_id' => $newsCat?->id,
+                'is_featured' => false,
+                'published_at' => now()->subDays(15),
+                'user_id' => 1,
+            ],
+            [
+                'title' => 'Dự án lắp đặt hệ thống năng lượng mặt trời 500kWp cho nhà máy sản xuất',
+                'excerpt' => 'NMT AUTO hoàn thành lắp đặt hệ thống điện mặt trời áp mái 500kWp, giúp nhà máy tiết kiệm 30% chi phí điện.',
+                'content' => '<p>NMT AUTO vừa hoàn thành dự án lắp đặt hệ thống điện mặt trời áp mái công suất 500kWp cho nhà máy sản xuất XYZ tại Bình Dương.</p>
+                <h3>Thông số dự án</h3>
+                <ul>
+                    <li>Công suất: 500kWp</li>
+                    <li>Diện tích: 3,500m² mái nhà</li>
+                    <li>Số tấm pin: 1,000 tấm Longi 500W</li>
+                    <li>Inverter: Huawei SUN2000</li>
+                </ul>
+                <h3>Hiệu quả đạt được</h3>
+                <p>Sau khi vận hành, hệ thống sản xuất trung bình 2,000 kWh/ngày, giúp nhà máy tiết kiệm khoảng 1.5 tỷ đồng tiền điện mỗi năm.</p>',
+                'type' => 'project',
+                'category_id' => $projectCat?->id,
+                'is_featured' => true,
+                'published_at' => now()->subDays(3),
+                'user_id' => 1,
+            ],
+        ];
+
+        foreach ($posts as $post) {
+            Post::create($post);
+        }
+
+        // Create Sample Pages
+        $pages = [
+            [
+                'title' => 'Về chúng tôi',
+                'slug' => 'about',
+                'content' => '<div class="space-y-8">
+                    <div class="flex gap-6">
+                        <div class="shrink-0 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md">
+                            <span class="material-symbols-outlined text-primary">verified</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-1">Chuyên môn kỹ thuật vượt trội</h4>
+                            <p class="text-slate-600">Các kỹ sư của chúng tôi được đào tạo chính quy với hơn 10 năm kinh nghiệm trong hệ thống năng lượng và thiết bị công nghiệp.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6">
+                        <div class="shrink-0 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md">
+                            <span class="material-symbols-outlined text-primary">support_agent</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-1">Hỗ trợ 24/7</h4>
+                            <p class="text-slate-600">Hạ tầng quan trọng không bao giờ nghỉ. Chúng tôi cũng vậy. Đội ngũ hỗ trợ luôn sẵn sàng phục vụ bạn mọi lúc.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6">
+                        <div class="shrink-0 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md">
+                            <span class="material-symbols-outlined text-primary">high_quality</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-1">Đảm bảo chất lượng cao cấp</h4>
+                            <p class="text-slate-600">Mọi sản phẩm và dịch vụ đều đáp ứng các tiêu chuẩn an toàn và chất lượng quốc tế khắt khe nhất.</p>
+                        </div>
+                    </div>
+                </div>',
+                'template' => 'about',
+                'is_active' => true,
+            ],
+            [
+                'title' => 'Chính sách bảo hành',
+                'slug' => 'chinh-sach-bao-hanh',
+                'content' => '<h2>Chính sách bảo hành sản phẩm</h2>
+                <p>NMT AUTO cam kết bảo hành chính hãng cho tất cả sản phẩm được mua trực tiếp từ công ty.</p>
+                <h3>Thời gian bảo hành</h3>
+                <ul>
+                    <li>Pin lithium xe nâng: 3 năm</li>
+                    <li>Hệ thống lưu trữ năng lượng: 10 năm</li>
+                    <li>Camera AI: 2 năm</li>
+                </ul>
+                <h3>Điều kiện bảo hành</h3>
+                <ul>
+                    <li>Sản phẩm còn trong thời hạn bảo hành</li>
+                    <li>Có phiếu bảo hành và hóa đơn mua hàng</li>
+                    <li>Sản phẩm bị lỗi do nhà sản xuất</li>
+                </ul>
+                <h3>Không bảo hành</h3>
+                <ul>
+                    <li>Hư hỏng do sử dụng sai cách</li>
+                    <li>Sản phẩm đã qua sửa chữa bên ngoài</li>
+                    <li>Hư hỏng do thiên tai, cháy nổ</li>
+                </ul>',
+                'template' => 'default',
+                'is_active' => true,
+            ],
+            [
+                'title' => 'Chính sách đổi trả',
+                'slug' => 'chinh-sach-doi-tra',
+                'content' => '<h2>Chính sách đổi trả hàng</h2>
+                <p>Quý khách có thể đổi trả sản phẩm trong vòng 7 ngày kể từ ngày nhận hàng.</p>
+                <h3>Điều kiện đổi trả</h3>
+                <ul>
+                    <li>Sản phẩm còn nguyên vẹn, chưa qua sử dụng</li>
+                    <li>Còn đầy đủ bao bì, phụ kiện đi kèm</li>
+                    <li>Có hóa đơn mua hàng</li>
+                </ul>
+                <h3>Quy trình đổi trả</h3>
+                <ol>
+                    <li>Liên hệ hotline: 1900 1234</li>
+                    <li>Cung cấp thông tin đơn hàng và lý do đổi trả</li>
+                    <li>Gửi sản phẩm về địa chỉ công ty</li>
+                    <li>Nhận sản phẩm mới hoặc hoàn tiền trong 3-5 ngày</li>
+                </ol>',
+                'template' => 'default',
+                'is_active' => true,
+            ],
+            [
+                'title' => 'Liên hệ',
+                'slug' => 'lien-he',
+                'content' => '<p>Hãy liên hệ với chúng tôi để được tư vấn và hỗ trợ tốt nhất.</p>',
+                'template' => 'contact',
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($pages as $page) {
+            Page::create($page);
+        }
+
+        // Create Sample Partners
+        $partners = [
+            [
+                'name' => 'Toyota Material Handling',
+                'url' => 'https://toyota-forklifts.com.vn',
+                'order' => 1,
+            ],
+            [
+                'name' => 'CATL Battery',
+                'url' => 'https://www.catl.com',
+                'order' => 2,
+            ],
+            [
+                'name' => 'BYD Forklift',
+                'url' => 'https://www.byd.com',
+                'order' => 3,
+            ],
+            [
+                'name' => 'Longi Solar',
+                'url' => 'https://www.longi.com',
+                'order' => 4,
+            ],
+            [
+                'name' => 'Huawei Solar',
+                'url' => 'https://solar.huawei.com',
+                'order' => 5,
+            ],
+            [
+                'name' => 'Hikvision',
+                'url' => 'https://www.hikvision.com',
+                'order' => 6,
+            ],
+        ];
+
+        foreach ($partners as $partner) {
+            Partner::create($partner);
+        }
+
         // Create Header Menu
         $headerMenus = [
-            ['name' => 'Trang chủ', 'url' => '/', 'order' => 1, 'location' => 'header'],
-            ['name' => 'Giới thiệu', 'url' => '/gioi-thieu', 'order' => 2, 'location' => 'header'],
-            ['name' => 'Sản phẩm', 'url' => '/san-pham', 'order' => 3, 'location' => 'header'],
-            ['name' => 'Dịch vụ', 'url' => '/dich-vu', 'order' => 4, 'location' => 'header'],
-            ['name' => 'Tin tức', 'url' => '/tin-tuc', 'order' => 5, 'location' => 'header'],
-            ['name' => 'Liên hệ', 'url' => '/lien-he', 'order' => 6, 'location' => 'header'],
+            ['name' => 'Trang chủ', 'link_type' => 'home', 'url' => '/', 'order' => 1, 'location' => 'header'],
+            ['name' => 'Sản phẩm', 'link_type' => 'custom', 'url' => '/san-pham', 'order' => 2, 'location' => 'header'],
+            ['name' => 'Dịch vụ', 'link_type' => 'custom', 'url' => '/dich-vu', 'order' => 3, 'location' => 'header'],
+            ['name' => 'Dự án', 'link_type' => 'custom', 'url' => '/du-an', 'order' => 4, 'location' => 'header'],
+            ['name' => 'Tin tức', 'link_type' => 'custom', 'url' => '/tin-tuc', 'order' => 5, 'location' => 'header'],
+            ['name' => 'Liên hệ', 'link_type' => 'custom', 'url' => '/lien-he', 'order' => 6, 'location' => 'header'],
         ];
 
         foreach ($headerMenus as $menu) {
@@ -237,10 +517,11 @@ class SampleDataSeeder extends Seeder
 
         // Create Footer Menu
         $footerMenus = [
-            ['name' => 'Chính sách bảo hành', 'url' => '/chinh-sach-bao-hanh', 'order' => 1, 'location' => 'footer'],
-            ['name' => 'Chính sách đổi trả', 'url' => '/chinh-sach-doi-tra', 'order' => 2, 'location' => 'footer'],
-            ['name' => 'Điều khoản sử dụng', 'url' => '/dieu-khoan-su-dung', 'order' => 3, 'location' => 'footer'],
-            ['name' => 'Chính sách bảo mật', 'url' => '/chinh-sach-bao-mat', 'order' => 4, 'location' => 'footer'],
+            ['name' => 'Dịch vụ', 'link_type' => 'custom', 'url' => '/dich-vu', 'order' => 1, 'location' => 'footer'],
+            ['name' => 'Dự án tiêu biểu', 'link_type' => 'custom', 'url' => '/du-an', 'order' => 2, 'location' => 'footer'],
+            ['name' => 'Tin tức', 'link_type' => 'custom', 'url' => '/tin-tuc', 'order' => 3, 'location' => 'footer'],
+            ['name' => 'Chính sách bảo hành', 'link_type' => 'page', 'url' => '/chinh-sach-bao-hanh', 'order' => 4, 'location' => 'footer'],
+            ['name' => 'Liên hệ', 'link_type' => 'custom', 'url' => '/lien-he', 'order' => 5, 'location' => 'footer'],
         ];
 
         foreach ($footerMenus as $menu) {

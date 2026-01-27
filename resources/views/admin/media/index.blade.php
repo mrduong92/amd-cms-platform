@@ -7,7 +7,7 @@
     <div class="card-header">
         <div class="d-flex justify-content-between align-items-center">
             <h3 class="card-title">Media Library</h3>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal"><i class="bi bi-upload me-1"></i> Upload</button>
+            <button type="button" class="btn btn-primary" onclick="openFileManager()"><i class="bi bi-upload me-1"></i> Upload</button>
         </div>
     </div>
     <div class="card-body">
@@ -42,22 +42,6 @@
     </div>
 </div>
 
-<!-- Upload Modal -->
-<div class="modal fade" id="uploadModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ route('admin.media.upload') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-header"><h5 class="modal-title">Upload File</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                <div class="modal-body">
-                    <div class="mb-3"><label for="file" class="form-label">Chọn file</label><input type="file" class="form-control" id="file" name="file" required></div>
-                    <div class="mb-3"><label for="folder" class="form-label">Thư mục</label><input type="text" class="form-control" id="folder" name="folder" value="uploads" placeholder="uploads"></div>
-                </div>
-                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><button type="submit" class="btn btn-primary">Upload</button></div>
-            </form>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('scripts')
@@ -66,6 +50,14 @@ function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(function() {
         alert('Đã copy URL!');
     });
+}
+
+function openFileManager() {
+    window.open('/filemanager?type=file', 'FileManager', 'width=900,height=600');
+    window.SetUrl = function(items) {
+        // Refresh the page to show newly uploaded files
+        window.location.reload();
+    };
 }
 </script>
 @endpush

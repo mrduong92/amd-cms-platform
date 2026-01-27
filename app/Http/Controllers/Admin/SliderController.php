@@ -29,14 +29,15 @@ class SliderController extends Controller
             'button_text' => 'nullable|string|max:100',
             'button_url' => 'nullable|string|max:255',
             'is_active' => 'boolean',
-            'image' => 'required|image|max:4096',
+            'image' => 'required|string|max:500',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
         $validated['order'] = Slider::max('order') + 1;
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('sliders', 'public');
+        // Handle image from file manager (convert URL to storage path)
+        if (!empty($validated['image'])) {
+            $validated['image'] = $this->convertUrlToStoragePath($validated['image']);
         }
 
         Slider::create($validated);
@@ -59,16 +60,20 @@ class SliderController extends Controller
             'button_text' => 'nullable|string|max:100',
             'button_url' => 'nullable|string|max:255',
             'is_active' => 'boolean',
-            'image' => 'nullable|image|max:4096',
+            'image' => 'nullable|string|max:500',
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
 
-        if ($request->hasFile('image')) {
-            if ($slider->image) {
-                Storage::disk('public')->delete($slider->image);
+        // Handle image from file manager
+        if (!empty($validated['image'])) {
+            $newPath = $this->convertUrlToStoragePath($validated['image']);
+            // Only update if it's a different image
+            if ($newPath !== $slider->image) {
+                $validated['image'] = $newPath;
+            } else {
+                unset($validated['image']);
             }
-            $validated['image'] = $request->file('image')->store('sliders', 'public');
         }
 
         $slider->update($validated);
@@ -79,10 +84,6 @@ class SliderController extends Controller
 
     public function destroy(Slider $slider)
     {
-        if ($slider->image) {
-            Storage::disk('public')->delete($slider->image);
-        }
-
         $slider->delete();
 
         return redirect()->route('admin.sliders.index')
@@ -96,5 +97,32 @@ class SliderController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Convert full URL to storage path
+     */
+    private function convertUrlToStoragePath(?string $url): ?string
+    {
+        if (empty($url)) {
+            return null;
+        }
+
+        // If it's already a storage path (not a full URL), return as is
+        if (!str_starts_with($url, 'http')) {
+            // Remove leading slash if present
+            return ltrim($url, '/');
+        }
+
+        // Extract path from URL
+        $parsed = parse_url($url);
+        $path = $parsed['path'] ?? '';
+
+        // Remove /storage/ prefix if present
+        if (str_contains($path, '/storage/')) {
+            $path = substr($path, strpos($path, '/storage/') + 9);
+        }
+
+        return ltrim($path, '/');
     }
 }

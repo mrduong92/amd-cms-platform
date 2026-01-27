@@ -24,8 +24,19 @@
             <div class="card">
                 <div class="card-header"><h3 class="card-title">Hình ảnh</h3></div>
                 <div class="card-body">
-                    @if($slider->image)<div class="mb-2"><img src="{{ asset('storage/' . $slider->image) }}" class="img-thumbnail w-100"></div>@endif
-                    <div class="mb-3"><label for="image" class="form-label">Thay đổi ảnh</label><input type="file" class="form-control" id="image" name="image" accept="image/*"></div>
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Ảnh slider</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control @error('image') is-invalid @enderror" id="image" name="image" value="{{ old('image', $slider->image) }}" readonly>
+                            <button type="button" class="btn btn-outline-secondary" onclick="openFileBrowser('image', 'image')">
+                                <i class="bi bi-folder2-open"></i> Chọn ảnh
+                            </button>
+                        </div>
+                        @error('image')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                        <div class="mt-2">
+                            <img id="image_preview" src="{{ $slider->image ? asset('storage/' . $slider->image) : '' }}" alt="" class="img-thumbnail w-100" style="{{ $slider->image ? '' : 'display:none;' }}">
+                        </div>
+                    </div>
                     <div class="mb-3"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $slider->is_active) ? 'checked' : '' }}><label class="form-check-label" for="is_active">Kích hoạt</label></div></div>
                 </div>
             </div>

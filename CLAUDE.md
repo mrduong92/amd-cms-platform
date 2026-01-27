@@ -80,6 +80,12 @@ nmtauto/
 │   │   ├── inquiries/
 │   │   └── users/
 │   └── frontend/                # Tailwind frontend views
+│       ├── layouts/
+│       ├── components/
+│       ├── products/
+│       ├── services/
+│       ├── posts/
+│       └── pages/
 ├── routes/
 │   ├── web.php                  # Frontend routes
 │   └── admin.php                # Admin routes
@@ -133,6 +139,20 @@ nmtauto/
 - Social: facebook, youtube, tiktok, zalo
 - SEO: meta tags, OG image
 - Footer: about text, copyright
+
+## Frontend Routes
+
+- `/` - Homepage with sliders, services, products, news
+- `/san-pham` - Products listing
+- `/san-pham/danh-muc/{slug}` - Products by category
+- `/san-pham/{slug}` - Product detail
+- `/dich-vu` - Services listing
+- `/dich-vu/{slug}` - Service detail
+- `/tin-tuc` - News listing (with type filter)
+- `/tin-tuc/{slug}` - Post detail
+- `/du-an` - Projects listing
+- `/lien-he` - Contact page with form
+- `/{slug}` - Dynamic pages
 
 ## Design System
 

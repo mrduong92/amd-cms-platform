@@ -36,7 +36,7 @@
 
                         <div class="mb-3">
                             <label for="description" class="form-label">Mô tả chi tiết</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="10">{{ old('description') }}</textarea>
+                            <textarea class="form-control tinymce-editor @error('description') is-invalid @enderror" id="description" name="description">{{ old('description') }}</textarea>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -150,19 +150,29 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="image" class="form-label">Ảnh đại diện</label>
-                            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*">
+                            <div class="input-group">
+                                <input type="text" class="form-control @error('image') is-invalid @enderror" id="image" name="image" value="{{ old('image') }}" readonly>
+                                <button type="button" class="btn btn-outline-secondary" onclick="openFileBrowser('image', 'image')">
+                                    <i class="bi bi-folder2-open"></i> Chọn ảnh
+                                </button>
+                            </div>
                             @error('image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <div id="image-preview" class="mt-2"></div>
+                            <div class="mt-2">
+                                <img id="image_preview" src="" alt="" class="img-thumbnail" style="max-width: 200px; display:none;">
+                            </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="gallery" class="form-label">Thư viện ảnh</label>
-                            <input type="file" class="form-control @error('gallery') is-invalid @enderror" id="gallery" name="gallery[]" accept="image/*" multiple>
-                            @error('gallery')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label class="form-label">Thư viện ảnh</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="gallery_input" placeholder="Chọn nhiều ảnh từ thư viện" readonly>
+                                <button type="button" class="btn btn-outline-secondary" onclick="openGalleryBrowser()">
+                                    <i class="bi bi-images"></i> Chọn ảnh
+                                </button>
+                            </div>
+                            <input type="hidden" name="gallery" id="gallery">
                             <small class="text-muted">Có thể chọn nhiều ảnh</small>
                         </div>
                     </div>
@@ -207,8 +217,6 @@
         `;
         container.appendChild(newRow);
         specIndex++;
-
-        // Enable first remove button if more than one spec
         updateRemoveButtons();
     });
 
@@ -227,17 +235,15 @@
         });
     }
 
-    // Image preview
-    document.getElementById('image').addEventListener('change', function(e) {
-        const preview = document.getElementById('image-preview');
-        preview.innerHTML = '';
-        if (e.target.files[0]) {
-            const img = document.createElement('img');
-            img.src = URL.createObjectURL(e.target.files[0]);
-            img.className = 'img-thumbnail';
-            img.style.maxWidth = '200px';
-            preview.appendChild(img);
-        }
-    });
+    function openGalleryBrowser() {
+        window.open('/filemanager?type=image', 'FileManager', 'width=900,height=600');
+        window.SetUrl = function(items) {
+            var urls = items.map(function(item) {
+                return item.url;
+            });
+            document.getElementById('gallery_input').value = urls.length + ' ảnh đã chọn';
+            document.getElementById('gallery').value = urls.join(',');
+        };
+    }
 </script>
 @endpush

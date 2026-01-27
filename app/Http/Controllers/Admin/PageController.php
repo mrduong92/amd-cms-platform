@@ -31,6 +31,7 @@ class PageController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',
+            'image' => 'nullable|string|max:500',
             'template' => 'nullable|string|max:50',
             'is_active' => 'boolean',
             'meta_title' => 'nullable|string|max:255',
@@ -39,6 +40,11 @@ class PageController extends Controller
 
         $validated['is_active'] = $request->boolean('is_active');
         $validated['template'] = $validated['template'] ?? 'default';
+
+        // Handle image from file manager (convert URL to storage path)
+        if (!empty($validated['image'])) {
+            $validated['image'] = $this->convertUrlToStoragePath($validated['image']);
+        }
 
         Page::create($validated);
 
@@ -56,6 +62,7 @@ class PageController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',
+            'image' => 'nullable|string|max:500',
             'template' => 'nullable|string|max:50',
             'is_active' => 'boolean',
             'meta_title' => 'nullable|string|max:255',
@@ -63,6 +70,17 @@ class PageController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+
+        // Handle image from file manager
+        if (!empty($validated['image'])) {
+            $newPath = $this->convertUrlToStoragePath($validated['image']);
+            // Only update if it's a different image
+            if ($newPath !== $page->image) {
+                $validated['image'] = $newPath;
+            } else {
+                unset($validated['image']);
+            }
+        }
 
         $page->update($validated);
 
@@ -76,5 +94,32 @@ class PageController extends Controller
 
         return redirect()->route('admin.pages.index')
             ->with('success', 'Trang đã được xóa.');
+    }
+
+    /**
+     * Convert full URL to storage path
+     */
+    private function convertUrlToStoragePath(?string $url): ?string
+    {
+        if (empty($url)) {
+            return null;
+        }
+
+        // If it's already a storage path (not a full URL), return as is
+        if (!str_starts_with($url, 'http')) {
+            // Remove leading slash if present
+            return ltrim($url, '/');
+        }
+
+        // Extract path from URL
+        $parsed = parse_url($url);
+        $path = $parsed['path'] ?? '';
+
+        // Remove /storage/ prefix if present
+        if (str_contains($path, '/storage/')) {
+            $path = substr($path, strpos($path, '/storage/') + 9);
+        }
+
+        return ltrim($path, '/');
     }
 }

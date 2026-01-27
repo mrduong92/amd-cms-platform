@@ -24,7 +24,20 @@
             <div class="card">
                 <div class="card-header"><h3 class="card-title">Hình ảnh</h3></div>
                 <div class="card-body">
-                    <div class="mb-3"><label for="image" class="form-label">Ảnh slider <span class="text-danger">*</span></label><input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*" required>@error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror<small class="text-muted">Kích thước khuyến nghị: 1920x700px</small></div>
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Ảnh slider <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="text" class="form-control @error('image') is-invalid @enderror" id="image" name="image" value="{{ old('image') }}" readonly required>
+                            <button type="button" class="btn btn-outline-secondary" onclick="openFileBrowser('image', 'image')">
+                                <i class="bi bi-folder2-open"></i> Chọn ảnh
+                            </button>
+                        </div>
+                        @error('image')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                        <small class="text-muted">Kích thước khuyến nghị: 1920x700px</small>
+                        <div class="mt-2">
+                            <img id="image_preview" src="" alt="" class="img-thumbnail w-100" style="display:none;">
+                        </div>
+                    </div>
                     <div class="mb-3"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}><label class="form-check-label" for="is_active">Kích hoạt</label></div></div>
                 </div>
             </div>

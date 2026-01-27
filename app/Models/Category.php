@@ -71,6 +71,14 @@ class Category extends Model
     }
 
     /**
+     * Scope ordered by order field
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('order', 'asc');
+    }
+
+    /**
      * Get parent category
      */
     public function parent()

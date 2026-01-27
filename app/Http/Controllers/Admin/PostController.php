@@ -51,15 +51,16 @@ class PostController extends Controller
             'published_at' => 'nullable|date',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|string|max:500',
         ]);
 
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active');
         $validated['user_id'] = auth()->id();
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('posts', 'public');
+        // Handle image from file manager (convert URL to storage path)
+        if (!empty($validated['image'])) {
+            $validated['image'] = $this->convertUrlToStoragePath($validated['image']);
         }
 
         Post::create($validated);
@@ -87,17 +88,21 @@ class PostController extends Controller
             'published_at' => 'nullable|date',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|string|max:500',
         ]);
 
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active');
 
-        if ($request->hasFile('image')) {
-            if ($post->image) {
-                Storage::disk('public')->delete($post->image);
+        // Handle image from file manager
+        if (!empty($validated['image'])) {
+            $newPath = $this->convertUrlToStoragePath($validated['image']);
+            // Only update if it's a different image
+            if ($newPath !== $post->image) {
+                $validated['image'] = $newPath;
+            } else {
+                unset($validated['image']);
             }
-            $validated['image'] = $request->file('image')->store('posts', 'public');
         }
 
         $post->update($validated);
@@ -108,13 +113,36 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        if ($post->image) {
-            Storage::disk('public')->delete($post->image);
-        }
-
         $post->delete();
 
         return redirect()->route('admin.posts.index')
             ->with('success', 'Bài viết đã được xóa.');
+    }
+
+    /**
+     * Convert full URL to storage path
+     */
+    private function convertUrlToStoragePath(?string $url): ?string
+    {
+        if (empty($url)) {
+            return null;
+        }
+
+        // If it's already a storage path (not a full URL), return as is
+        if (!str_starts_with($url, 'http')) {
+            // Remove leading slash if present
+            return ltrim($url, '/');
+        }
+
+        // Extract path from URL
+        $parsed = parse_url($url);
+        $path = $parsed['path'] ?? '';
+
+        // Remove /storage/ prefix if present
+        if (str_contains($path, '/storage/')) {
+            $path = substr($path, strpos($path, '/storage/') + 9);
+        }
+
+        return ltrim($path, '/');
     }
 }

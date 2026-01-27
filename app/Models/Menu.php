@@ -11,7 +11,11 @@ class Menu extends Model
 
     protected $fillable = [
         'name',
+        'icon',
         'url',
+        'link_type',
+        'linkable_type',
+        'linkable_id',
         'target',
         'parent_id',
         'order',
@@ -22,6 +26,65 @@ class Menu extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    /**
+     * Link type options
+     */
+    public const LINK_TYPES = [
+        'custom' => 'URL tùy chỉnh',
+        'home' => 'Trang chủ',
+        'product' => 'Sản phẩm',
+        'product_category' => 'Danh mục sản phẩm',
+        'service' => 'Dịch vụ',
+        'post' => 'Bài viết',
+        'page' => 'Trang tĩnh',
+    ];
+
+    /**
+     * Get the linkable model
+     */
+    public function linkable()
+    {
+        return $this->morphTo();
+    }
+
+    /**
+     * Get the computed URL
+     */
+    public function getComputedUrlAttribute()
+    {
+        switch ($this->link_type) {
+            case 'home':
+                return route('home');
+            case 'product':
+                if ($this->linkable) {
+                    return route('products.show', $this->linkable->slug);
+                }
+                return route('products.index');
+            case 'product_category':
+                if ($this->linkable) {
+                    return route('products.category', $this->linkable->slug);
+                }
+                return route('products.index');
+            case 'service':
+                if ($this->linkable) {
+                    return route('services.show', $this->linkable->slug);
+                }
+                return route('services.index');
+            case 'post':
+                if ($this->linkable) {
+                    return route('posts.show', $this->linkable->slug);
+                }
+                return route('posts.index');
+            case 'page':
+                if ($this->linkable) {
+                    return route('pages.show', $this->linkable->slug);
+                }
+                return '#';
+            default:
+                return $this->url ?: '#';
+        }
+    }
 
     /**
      * Scope for active menus
@@ -85,5 +148,13 @@ class Menu extends Model
     public function activeChildren()
     {
         return $this->children()->where('is_active', true);
+    }
+
+    /**
+     * Get URL for menu item
+     */
+    public function getUrl(): string
+    {
+        return $this->computed_url;
     }
 }
