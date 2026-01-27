@@ -10,7 +10,7 @@
     <!-- Open Graph -->
     <meta property="og:title" content="@yield('title', setting('site_name'))">
     <meta property="og:description" content="@yield('meta_description', setting('site_description'))">
-    <meta property="og:image" content="@yield('og_image', asset('storage/' . setting('logo')))">
+    <meta property="og:image" content="@yield('og_image', setting('site_logo') ? asset('storage/' . setting('site_logo')) : '')">
     <meta property="og:type" content="website">
 
     <!-- Tailwind CSS CDN -->
@@ -27,8 +27,9 @@
     <style>[x-cloak] { display: none !important; }</style>
 
     <!-- Favicon -->
-    @if(setting('favicon'))
-    <link rel="icon" href="{{ asset('storage/' . setting('favicon')) }}" type="image/x-icon">
+    @if(setting('site_favicon'))
+    <link rel="icon" href="{{ asset('storage/' . setting('site_favicon')) }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('storage/' . setting('site_favicon')) }}" type="image/x-icon">
     @endif
 
     <script>

@@ -53,6 +53,15 @@ class SettingSeeder extends Seeder
 
             // Contact Settings
             [
+                'key' => 'company_name',
+                'value' => 'CÔNG TY TNHH NMT AUTO',
+                'type' => 'text',
+                'group' => 'contact',
+                'label' => 'Tên công ty',
+                'description' => 'Tên đầy đủ của công ty',
+                'order' => 0,
+            ],
+            [
                 'key' => 'contact_phone',
                 'value' => '0123 456 789',
                 'type' => 'text',
@@ -152,6 +161,15 @@ class SettingSeeder extends Seeder
                 'label' => 'Instagram',
                 'description' => 'Link trang Instagram',
                 'order' => 5,
+            ],
+            [
+                'key' => 'fanpage_embed',
+                'value' => '<iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fnmtauto&tabs=timeline&width=340&height=300&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId" width="100%" height="300" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>',
+                'type' => 'textarea',
+                'group' => 'social',
+                'label' => 'Facebook Fanpage Embed',
+                'description' => 'Mã nhúng Facebook Fanpage (lấy từ Facebook Page Plugin)',
+                'order' => 6,
             ],
 
             // SEO Settings

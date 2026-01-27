@@ -58,11 +58,7 @@
                             <tr class="{{ $inquiry->status == 'new' ? 'table-warning' : '' }}">
                                 <td>{{ $inquiry->id }}</td>
                                 <td>
-                                    <strong>{{ $inquiry->name }}</strong><br>
-                                    <small class="text-muted">{{ $inquiry->email }}</small>
-                                    @if($inquiry->phone)
-                                        <br><small class="text-muted">{{ $inquiry->phone }}</small>
-                                    @endif
+                                    <small class="text-muted">{{ $inquiry->phone }}</small>
                                 </td>
                                 <td>
                                     {{ $inquiry->subject ?: 'Không có chủ đề' }}

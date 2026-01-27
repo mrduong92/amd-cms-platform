@@ -18,6 +18,8 @@ class ContactInquiry extends Model
         'message',
         'status',
         'admin_notes',
+        'ip_address',
+        'user_agent',
     ];
 
     /**

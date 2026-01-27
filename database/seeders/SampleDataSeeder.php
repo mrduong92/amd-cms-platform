@@ -21,54 +21,54 @@ class SampleDataSeeder extends Seeder
     public function run(): void
     {
         // Create Product Categories
-        $categories = [
-            [
-                'name' => 'Bình ắc quy pin lithium cho xe nâng điện',
-                'type' => 'product',
-                'icon' => 'battery_charging_full',
-                'description' => 'Pin lithium chất lượng cao dành cho xe nâng công nghiệp, thay thế pin axit truyền thống',
-                'order' => 1,
-            ],
-            [
-                'name' => 'Hệ thống Camera AI an toàn cho xe nâng và máy công trình',
-                'type' => 'product',
-                'icon' => 'videocam',
-                'description' => 'Camera AI tích hợp cảnh báo va chạm, phát hiện người và vật cản',
-                'order' => 2,
-            ],
-            [
-                'name' => 'Phụ tùng và linh kiện xe nâng và máy công trình',
-                'type' => 'product',
-                'icon' => 'settings',
-                'description' => 'Phụ tùng thay thế chính hãng cho các loại xe nâng và máy công trình',
-                'order' => 3,
-            ],
-            [
-                'name' => 'Giải pháp lưu trữ năng lượng mặt trời (ESS)',
-                'type' => 'product',
-                'icon' => 'solar_power',
-                'description' => 'Hệ thống lưu trữ năng lượng mặt trời cho gia đình và doanh nghiệp',
-                'order' => 4,
-            ],
-            [
-                'name' => 'Dịch vụ sửa chữa, bảo trì xe nâng',
-                'type' => 'product',
-                'icon' => 'build',
-                'description' => 'Dịch vụ bảo trì định kỳ và sửa chữa xe nâng tận nơi 24/7',
-                'order' => 5,
-            ],
-            [
-                'name' => 'Dịch vụ cho thuê xe nâng điện và xe nâng dầu',
-                'type' => 'product',
-                'icon' => 'local_shipping',
-                'description' => 'Cho thuê xe nâng ngắn hạn và dài hạn với nhiều loại xe đa dạng',
-                'order' => 6,
-            ],
-        ];
+        // $categories = [
+        //     [
+        //         'name' => 'Bình ắc quy pin lithium cho xe nâng điện',
+        //         'type' => 'product',
+        //         'icon' => 'battery_charging_full',
+        //         'description' => 'Pin lithium chất lượng cao dành cho xe nâng công nghiệp, thay thế pin axit truyền thống',
+        //         'order' => 1,
+        //     ],
+        //     [
+        //         'name' => 'Hệ thống Camera AI an toàn cho xe nâng và máy công trình',
+        //         'type' => 'product',
+        //         'icon' => 'videocam',
+        //         'description' => 'Camera AI tích hợp cảnh báo va chạm, phát hiện người và vật cản',
+        //         'order' => 2,
+        //     ],
+        //     [
+        //         'name' => 'Phụ tùng và linh kiện xe nâng và máy công trình',
+        //         'type' => 'product',
+        //         'icon' => 'settings',
+        //         'description' => 'Phụ tùng thay thế chính hãng cho các loại xe nâng và máy công trình',
+        //         'order' => 3,
+        //     ],
+        //     [
+        //         'name' => 'Giải pháp lưu trữ năng lượng mặt trời (ESS)',
+        //         'type' => 'product',
+        //         'icon' => 'solar_power',
+        //         'description' => 'Hệ thống lưu trữ năng lượng mặt trời cho gia đình và doanh nghiệp',
+        //         'order' => 4,
+        //     ],
+        //     [
+        //         'name' => 'Dịch vụ sửa chữa, bảo trì xe nâng',
+        //         'type' => 'product',
+        //         'icon' => 'build',
+        //         'description' => 'Dịch vụ bảo trì định kỳ và sửa chữa xe nâng tận nơi 24/7',
+        //         'order' => 5,
+        //     ],
+        //     [
+        //         'name' => 'Dịch vụ cho thuê xe nâng điện và xe nâng dầu',
+        //         'type' => 'product',
+        //         'icon' => 'local_shipping',
+        //         'description' => 'Cho thuê xe nâng ngắn hạn và dài hạn với nhiều loại xe đa dạng',
+        //         'order' => 6,
+        //     ],
+        // ];
 
-        foreach ($categories as $cat) {
-            Category::create($cat);
-        }
+        // foreach ($categories as $cat) {
+        //     Category::create($cat);
+        // }
 
         // // Create Service Categories
         // $serviceCategories = [

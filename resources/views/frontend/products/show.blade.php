@@ -26,24 +26,139 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <!-- Product Image -->
-            <div class="relative">
-                <div class="aspect-square bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden">
-                    <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://via.placeholder.com/600' }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+            <div class="relative" x-data="productGallery()">
+                <!-- Main Image -->
+                <div class="aspect-square bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden cursor-zoom-in group"
+                     @click="openLightbox(currentImage)">
+                    <img :src="currentImage" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                        <span class="material-symbols-outlined text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg">zoom_in</span>
+                    </div>
                 </div>
                 @if($product->badge)
-                <span class="absolute top-6 left-6 bg-primary text-white text-sm font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg">{{ $product->badge }}</span>
+                <span class="absolute top-6 left-6 bg-primary text-white text-sm font-bold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg z-10">{{ $product->badge }}</span>
                 @endif
 
-                <!-- Product Gallery -->
-                @if($product->images->count() > 0)
-                <div class="mt-4 grid grid-cols-4 gap-4">
-                    @foreach($product->images as $image)
-                    <div class="aspect-square bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary">
-                        <img src="{{ asset('storage/' . $image->image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                <!-- Product Gallery Thumbnails -->
+                @php
+                    $allImages = collect();
+                    if($product->image) {
+                        $allImages->push(asset('storage/' . $product->image));
+                    }
+                    foreach($product->images as $img) {
+                        $allImages->push(asset('storage/' . $img->image));
+                    }
+                @endphp
+
+                @if($allImages->count() > 1)
+                <div class="mt-4 grid grid-cols-5 gap-3">
+                    @foreach($allImages as $index => $imgUrl)
+                    <div class="aspect-square bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden cursor-pointer transition-all duration-200"
+                         :class="currentImage === '{{ $imgUrl }}' ? 'ring-2 ring-primary ring-offset-2' : 'hover:ring-2 hover:ring-slate-300'"
+                         @click="setImage('{{ $imgUrl }}')">
+                        <img src="{{ $imgUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                     </div>
                     @endforeach
                 </div>
                 @endif
+
+                <!-- Lightbox Modal -->
+                <div x-show="lightboxOpen" x-cloak
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     @keydown.escape.window="closeLightbox()"
+                     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90">
+
+                    <!-- Close Button -->
+                    <button @click="closeLightbox()" class="absolute top-4 right-4 text-white hover:text-primary transition-colors z-10">
+                        <span class="material-symbols-outlined text-4xl">close</span>
+                    </button>
+
+                    <!-- Navigation Arrows -->
+                    @if($allImages->count() > 1)
+                    <button @click="prevImage()" class="absolute left-4 text-white hover:text-primary transition-colors z-10">
+                        <span class="material-symbols-outlined text-5xl">chevron_left</span>
+                    </button>
+                    <button @click="nextImage()" class="absolute right-4 text-white hover:text-primary transition-colors z-10">
+                        <span class="material-symbols-outlined text-5xl">chevron_right</span>
+                    </button>
+                    @endif
+
+                    <!-- Lightbox Image -->
+                    <div class="max-w-5xl max-h-[90vh] relative" @click.stop>
+                        <img :src="lightboxImage"
+                             alt="{{ $product->name }}"
+                             class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100">
+                    </div>
+
+                    <!-- Thumbnail Strip -->
+                    @if($allImages->count() > 1)
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 bg-black/50 p-2 rounded-lg">
+                        @foreach($allImages as $index => $imgUrl)
+                        <div class="w-16 h-16 rounded overflow-hidden cursor-pointer transition-all"
+                             :class="lightboxImage === '{{ $imgUrl }}' ? 'ring-2 ring-primary' : 'opacity-60 hover:opacity-100'"
+                             @click="setLightboxImage('{{ $imgUrl }}')">
+                            <img src="{{ $imgUrl }}" alt="" class="w-full h-full object-cover">
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
+                </div>
+
+                <script>
+                    function productGallery() {
+                        const images = @json($allImages);
+                        return {
+                            images: images,
+                            currentImage: images[0] || '{{ $product->image ? asset("storage/" . $product->image) : "https://via.placeholder.com/600" }}',
+                            lightboxOpen: false,
+                            lightboxImage: '',
+
+                            setImage(src) {
+                                this.currentImage = src;
+                            },
+
+                            openLightbox(src) {
+                                this.lightboxImage = src;
+                                this.lightboxOpen = true;
+                                document.body.style.overflow = 'hidden';
+                            },
+
+                            closeLightbox() {
+                                this.lightboxOpen = false;
+                                document.body.style.overflow = '';
+                            },
+
+                            setLightboxImage(src) {
+                                this.lightboxImage = src;
+                                this.currentImage = src;
+                            },
+
+                            getCurrentIndex() {
+                                return this.images.indexOf(this.lightboxImage);
+                            },
+
+                            prevImage() {
+                                const index = this.getCurrentIndex();
+                                const newIndex = index > 0 ? index - 1 : this.images.length - 1;
+                                this.setLightboxImage(this.images[newIndex]);
+                            },
+
+                            nextImage() {
+                                const index = this.getCurrentIndex();
+                                const newIndex = index < this.images.length - 1 ? index + 1 : 0;
+                                this.setLightboxImage(this.images[newIndex]);
+                            }
+                        }
+                    }
+                </script>
             </div>
 
             <!-- Product Info -->
@@ -87,9 +202,9 @@
                         <span class="material-symbols-outlined align-middle mr-2">mail</span>
                         Yêu cầu báo giá
                     </a>
-                    <a href="tel:{{ setting('phone') }}" class="px-8 py-4 bg-slate-100 dark:bg-slate-800 font-bold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-center">
+                    <a href="tel:{{ setting('contact_phone') }}" class="px-8 py-4 bg-slate-100 dark:bg-slate-800 font-bold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-center">
                         <span class="material-symbols-outlined align-middle mr-2">call</span>
-                        {{ setting('phone', 'Liên hệ ngay') }}
+                        {{ setting('contact_phone', 'Liên hệ ngay') }}
                     </a>
                 </div>
             </div>
