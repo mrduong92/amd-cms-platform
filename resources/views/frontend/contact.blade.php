@@ -26,11 +26,25 @@
                 </div>
                 @endif
 
-                <form action="{{ route('contact.submit') }}" method="POST" class="space-y-6">
+                @if(session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+                    {{ session('error') }}
+                </div>
+                @endif
+
+                <form action="{{ route('contact.submit') }}" method="POST" id="contact-form" class="space-y-6">
                     @csrf
+                    <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+
                     <div>
                         <label for="phone" class="block text-sm font-medium mb-2">Số điện thoại <span class="text-red-500">*</span></label>
-                        <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" required placeholder="Nhập số điện thoại của bạn" class="w-full px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" required
+                               placeholder="VD: 0901234567"
+                               pattern="[0-9]{10}"
+                               maxlength="10"
+                               class="w-full px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <p class="text-slate-500 text-xs mt-1">Nhập đúng 10 chữ số (VD: 0901234567)</p>
+                        <p id="phone-error" class="text-red-500 text-sm mt-1 hidden">Số điện thoại phải có đúng 10 chữ số</p>
                         @error('phone')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -42,10 +56,15 @@
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
-                    <button type="submit" class="px-8 py-4 bg-primary text-white font-bold rounded-lg hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30">
+                    <button type="submit" id="submit-btn" class="px-8 py-4 bg-primary text-white font-bold rounded-lg hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 disabled:opacity-50 disabled:cursor-not-allowed">
                         <span class="material-symbols-outlined align-middle mr-2">send</span>
-                        Gửi tin nhắn
+                        <span id="btn-text">Gửi tin nhắn</span>
                     </button>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Trang này được bảo vệ bởi reCAPTCHA và tuân theo
+                        <a href="https://policies.google.com/privacy" target="_blank" class="underline">Chính sách quyền riêng tư</a> và
+                        <a href="https://policies.google.com/terms" target="_blank" class="underline">Điều khoản dịch vụ</a> của Google.
+                    </p>
                 </form>
             </div>
 
@@ -140,3 +159,80 @@
     </div>
 </section>
 @endsection
+
+@push('scripts')
+<script>
+    // Phone number validation
+    const phoneInput = document.getElementById('phone');
+    const phoneError = document.getElementById('phone-error');
+
+    // Only allow digits
+    phoneInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+
+        // Validate length
+        if (this.value.length === 10) {
+            phoneError.classList.add('hidden');
+            this.classList.remove('border-red-500');
+            this.classList.add('border-slate-300', 'dark:border-slate-700');
+        } else if (this.value.length > 0) {
+            phoneError.classList.remove('hidden');
+            this.classList.add('border-red-500');
+            this.classList.remove('border-slate-300', 'dark:border-slate-700');
+        }
+    });
+
+    function validatePhone() {
+        const phone = phoneInput.value.replace(/[^0-9]/g, '');
+        if (phone.length !== 10) {
+            phoneError.classList.remove('hidden');
+            phoneInput.classList.add('border-red-500');
+            phoneInput.focus();
+            return false;
+        }
+        return true;
+    }
+
+    @if(setting('recaptcha_site_key'))
+    // With reCAPTCHA
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!validatePhone()) {
+            return;
+        }
+
+        const form = this;
+        const submitBtn = document.getElementById('submit-btn');
+        const btnText = document.getElementById('btn-text');
+        const originalText = btnText.textContent;
+
+        submitBtn.disabled = true;
+        btnText.textContent = 'Đang xử lý...';
+
+        grecaptcha.ready(function() {
+            grecaptcha.execute('{{ setting('recaptcha_site_key') }}', {action: 'contact'}).then(function(token) {
+                document.getElementById('recaptcha_token').value = token;
+                form.submit();
+            }).catch(function(error) {
+                console.error('reCAPTCHA error:', error);
+                submitBtn.disabled = false;
+                btnText.textContent = originalText;
+                alert('Có lỗi xảy ra với reCAPTCHA. Vui lòng thử lại.');
+            });
+        });
+    });
+    @else
+    // Without reCAPTCHA
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+        if (!validatePhone()) {
+            e.preventDefault();
+            return;
+        }
+    });
+    @endif
+</script>
+@if(setting('recaptcha_site_key'))
+<script src="https://www.google.com/recaptcha/api.js?render={{ setting('recaptcha_site_key') }}"></script>
+@endif
+@endpush

@@ -172,6 +172,26 @@ class SettingSeeder extends Seeder
                 'order' => 6,
             ],
 
+            // reCAPTCHA Settings
+            [
+                'key' => 'recaptcha_site_key',
+                'value' => '',
+                'type' => 'text',
+                'group' => 'security',
+                'label' => 'reCAPTCHA Site Key',
+                'description' => 'Google reCAPTCHA v3 Site Key (Public)',
+                'order' => 1,
+            ],
+            [
+                'key' => 'recaptcha_secret_key',
+                'value' => '',
+                'type' => 'text',
+                'group' => 'security',
+                'label' => 'reCAPTCHA Secret Key',
+                'description' => 'Google reCAPTCHA v3 Secret Key (Private)',
+                'order' => 2,
+            ],
+
             // SEO Settings
             [
                 'key' => 'seo_meta_title',

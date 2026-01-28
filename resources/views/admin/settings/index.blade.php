@@ -36,6 +36,12 @@
                                         @case('footer')
                                             <i class="bi bi-layout-text-sidebar me-2"></i> Footer
                                             @break
+                                        @case('security')
+                                            <i class="bi bi-shield-lock me-2"></i> Bảo mật
+                                            @break
+                                        @case('homepage')
+                                            <i class="bi bi-house me-2"></i> Trang chủ
+                                            @break
                                         @default
                                             <i class="bi bi-sliders me-2"></i> {{ ucfirst($g) }}
                                     @endswitch
@@ -66,6 +72,12 @@
                                 @break
                             @case('footer')
                                 Cài đặt Footer
+                                @break
+                            @case('security')
+                                Cài đặt Bảo mật
+                                @break
+                            @case('homepage')
+                                Cài đặt Trang chủ
                                 @break
                             @default
                                 {{ ucfirst($group) }}
