@@ -101,11 +101,6 @@
     <!-- Social Media Widget -->
     @include('frontend.components.social-widget')
 
-    <!-- Dark Mode Toggle -->
-    <button class="fixed bottom-8 right-8 w-12 h-12 bg-white dark:bg-slate-800 rounded-full shadow-2xl flex items-center justify-center border border-slate-200 dark:border-slate-700 z-30 hover:scale-110 transition-transform lg:z-[100]" onclick="document.documentElement.classList.toggle('dark')">
-        <span class="material-symbols-outlined dark:hidden text-xl">dark_mode</span>
-        <span class="material-symbols-outlined hidden dark:block text-xl">light_mode</span>
-    </button>
 
     @stack('scripts')
 </body>
