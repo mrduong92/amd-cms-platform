@@ -13,11 +13,12 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SiteController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
+Route::prefix('admin')->middleware(['auth', 'admin', 'admin.site'])->name('admin.')->group(function () {
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -75,4 +76,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     // Cache Management
     Route::post('cache/clear-homepage', [CacheController::class, 'clearHomepage'])->name('cache.clear-homepage');
     Route::post('cache/clear-all', [CacheController::class, 'clearAll'])->name('cache.clear-all');
+
+    // Sites Management
+    Route::resource('sites', SiteController::class);
+    Route::post('sites/switch', [SiteController::class, 'switch'])->name('sites.switch');
 });

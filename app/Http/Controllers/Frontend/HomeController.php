@@ -28,19 +28,51 @@ class HomeController extends Controller
 
     public function index()
     {
-        $data = Cache::remember(self::CACHE_KEY, self::CACHE_TTL, function () {
-            return $this->getHomepageData();
+        $site = currentSite();
+        $theme = $site?->theme ?? 'frontend';
+        $cacheKey = self::CACHE_KEY . '_' . ($site?->id ?? 'default');
+
+        $data = Cache::remember($cacheKey, self::CACHE_TTL, function () use ($theme) {
+            return $this->getHomepageData($theme);
         });
 
-        return view('frontend.home', $data);
+        return view($theme . '.home', $data);
     }
 
     /**
      * Get all homepage data
      */
-    protected function getHomepageData(): array
+    protected function getHomepageData(string $theme = 'frontend'): array
     {
-        $sliders = Slider::active()->ordered()->get();
+        $sliders = Slider::forCurrentSite()->active()->ordered()->get();
+        $partners = Partner::forCurrentSite()->active()->ordered()->get();
+
+        // AMD theme has different homepage structure
+        if ($theme === 'amd') {
+            // Get projects for AMD with category eager loading
+            $projects = Post::forCurrentSite()
+                ->with('category')
+                ->projects()
+                ->active()
+                ->published()
+                ->latest('published_at')
+                ->limit(4)
+                ->get();
+
+            // Get news/blog posts for AMD
+            $news = Post::forCurrentSite()
+                ->with('category')
+                ->news()
+                ->active()
+                ->published()
+                ->latest('published_at')
+                ->limit(6)
+                ->get();
+
+            return compact('sliders', 'partners', 'projects', 'news');
+        }
+
+        // NMT AUTO theme (frontend)
         $services = Service::active()->ordered()->limit(6)->get();
 
         // Get product categories with their products
@@ -61,13 +93,10 @@ class HomeController extends Controller
         }
 
         // Get latest posts (news, projects, success stories)
-        $latestPosts = Post::active()->published()->latest('published_at')->limit(4)->get();
-
-        // Get partners
-        $partners = Partner::active()->ordered()->get();
+        $latestPosts = Post::forCurrentSite()->active()->published()->latest('published_at')->limit(4)->get();
 
         // Get the "about" page for Core Values section
-        $aboutPage = Page::where('slug', 'about')->active()->first();
+        $aboutPage = Page::forCurrentSite()->where('slug', 'about')->active()->first();
 
         // Get social posts
         $socialPosts = SocialPost::active()->ordered()->get();
@@ -85,15 +114,16 @@ class HomeController extends Controller
     }
 
     /**
-     * Clear homepage cache
+     * Clear homepage cache for all sites
      */
     public static function clearCache(): void
     {
-        Cache::forget(self::CACHE_KEY);
-    }
+        Cache::forget(self::CACHE_KEY . '_default');
 
-    public function contact()
-    {
-        return view('frontend.contact');
+        // Clear cache for all sites
+        $sites = \App\Models\Site::all();
+        foreach ($sites as $site) {
+            Cache::forget(self::CACHE_KEY . '_' . $site->id);
+        }
     }
 }

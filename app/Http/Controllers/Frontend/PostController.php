@@ -9,9 +9,18 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    /**
+     * Get the current theme
+     */
+    protected function getTheme(): string
+    {
+        $site = currentSite();
+        return $site?->theme ?? 'frontend';
+    }
+
     public function index(Request $request)
     {
-        $query = Post::active()->published()->latest('published_at');
+        $query = Post::forCurrentSite()->with('category')->active()->published()->latest('published_at');
 
         if ($request->filled('type')) {
             $query->where('type', $request->type);
@@ -26,13 +35,16 @@ class PostController extends Controller
         $posts = $query->paginate(9);
         $categories = Category::where('type', 'post')->active()->ordered()->get();
 
-        return view('frontend.posts.index', compact('posts', 'categories'));
+        $theme = $this->getTheme();
+        return view($theme . '.posts.index', compact('posts', 'categories'));
     }
 
     public function show($slug)
     {
-        $post = Post::where('slug', $slug)->active()->published()->with(['category', 'author'])->firstOrFail();
-        $relatedPosts = Post::where('id', '!=', $post->id)
+        $post = Post::forCurrentSite()->where('slug', $slug)->active()->published()->with(['category', 'author'])->firstOrFail();
+        $relatedPosts = Post::forCurrentSite()
+            ->with('category')
+            ->where('id', '!=', $post->id)
             ->when($post->category_id, function ($q) use ($post) {
                 $q->where('category_id', $post->category_id);
             })
@@ -42,17 +54,41 @@ class PostController extends Controller
             ->limit(3)
             ->get();
 
-        return view('frontend.posts.show', compact('post', 'relatedPosts'));
+        $theme = $this->getTheme();
+
+        // For AMD theme, projects use a different view
+        if ($theme === 'amd' && $post->type === 'project') {
+            return view('amd.projects.show', compact('post', 'relatedPosts'));
+        }
+
+        return view($theme . '.posts.show', compact('post', 'relatedPosts'));
     }
 
-    public function projects()
+    public function projects(Request $request)
     {
-        $posts = Post::where('type', 'project')
+        $query = Post::forCurrentSite()
+            ->with('category')
+            ->where('type', 'project')
             ->active()
             ->published()
-            ->latest('published_at')
-            ->paginate(9);
+            ->latest('published_at');
 
-        return view('frontend.posts.projects', compact('posts'));
+        if ($request->filled('category')) {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        $projects = $query->paginate(9);
+        $categories = Category::where('type', 'post')->active()->ordered()->get();
+
+        $theme = $this->getTheme();
+
+        // AMD theme has dedicated projects views
+        if ($theme === 'amd') {
+            return view('amd.projects.index', compact('projects', 'categories'));
+        }
+
+        return view('frontend.posts.projects', ['posts' => $projects]);
     }
 }

@@ -15,6 +15,38 @@
             </li>
         </ul>
 
+        <!-- Site Switcher -->
+        @php
+            $sites = \App\Models\Site::active()->get();
+            $adminSiteId = session('admin_site_id');
+            $currentAdminSite = $adminSiteId ? $sites->firstWhere('id', $adminSiteId) : $sites->first();
+        @endphp
+        @if($sites->count() > 1)
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" href="#">
+                        <i class="bi bi-globe me-2"></i>
+                        <span class="fw-semibold">{{ $currentAdminSite?->name ?? 'Chọn Website' }}</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <span class="dropdown-header">Chuyển Website</span>
+                        <div class="dropdown-divider"></div>
+                        @foreach($sites as $site)
+                            <form action="{{ route('admin.sites.switch') }}" method="POST" class="d-inline">
+                                @csrf
+                                <input type="hidden" name="site_id" value="{{ $site->id }}">
+                                <button type="submit" class="dropdown-item {{ $currentAdminSite?->id === $site->id ? 'active' : '' }}">
+                                    <i class="bi bi-{{ $currentAdminSite?->id === $site->id ? 'check-circle-fill text-success' : 'circle' }} me-2"></i>
+                                    {{ $site->name }}
+                                    <small class="text-muted d-block ms-4">{{ $site->domain }}</small>
+                                </button>
+                            </form>
+                        @endforeach
+                    </div>
+                </li>
+            </ul>
+        @endif
+
         <!-- End navbar links -->
         <ul class="navbar-nav ms-auto">
             <!-- Cache Clear Dropdown -->
@@ -42,7 +74,7 @@
 
             <!-- Notifications Dropdown -->
             @php
-                $newInquiries = \App\Models\ContactInquiry::new()->count();
+                $newInquiries = \App\Models\ContactInquiry::forSite(adminSiteId())->new()->count();
             @endphp
             <li class="nav-item dropdown">
                 <a class="nav-link" data-bs-toggle="dropdown" href="#">

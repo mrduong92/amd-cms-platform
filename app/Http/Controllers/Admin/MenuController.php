@@ -18,7 +18,8 @@ class MenuController extends Controller
         $location = $request->get('location', 'header');
 
         // Eagerly load 3 levels of children
-        $menus = Menu::where('location', $location)
+        $menus = Menu::forSite(adminSiteId())
+            ->where('location', $location)
             ->whereNull('parent_id')
             ->with(['children' => function ($q) {
                 $q->orderBy('order')->with(['children' => function ($q2) {
@@ -38,7 +39,7 @@ class MenuController extends Controller
 
     public function create()
     {
-        $parents = Menu::whereNull('parent_id')->orderBy('name')->get();
+        $parents = Menu::forSite(adminSiteId())->whereNull('parent_id')->orderBy('name')->get();
         $linkOptions = $this->getLinkOptions();
 
         return view('admin.menus.create', compact('parents', 'linkOptions'));
@@ -61,7 +62,8 @@ class MenuController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
         $validated['target'] = $validated['target'] ?? '_self';
         $validated['link_type'] = $validated['link_type'] ?? 'custom';
-        $validated['order'] = Menu::where('location', $validated['location'])->max('order') + 1;
+        $validated['site_id'] = adminSiteId();
+        $validated['order'] = Menu::forSite(adminSiteId())->where('location', $validated['location'])->max('order') + 1;
 
         // Set linkable type based on link_type
         if ($validated['link_type'] !== 'custom' && $validated['link_type'] !== 'home' && !empty($validated['linkable_id'])) {
@@ -79,7 +81,8 @@ class MenuController extends Controller
 
     public function edit(Menu $menu)
     {
-        $parents = Menu::whereNull('parent_id')
+        $parents = Menu::forSite(adminSiteId())
+            ->whereNull('parent_id')
             ->where('id', '!=', $menu->id)
             ->orderBy('name')
             ->get();
@@ -166,6 +169,7 @@ class MenuController extends Controller
                 'parent_id' => $parentId,
                 'location' => $location,
                 'is_active' => $item['is_active'] ?? true,
+                'site_id' => adminSiteId(),
             ];
 
             if ($isNew) {

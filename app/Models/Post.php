@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasSiteScope;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,9 +10,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes, Sluggable;
+    use HasFactory, SoftDeletes, Sluggable, HasSiteScope;
 
     protected $fillable = [
+        'site_id',
         'category_id',
         'user_id',
         'title',

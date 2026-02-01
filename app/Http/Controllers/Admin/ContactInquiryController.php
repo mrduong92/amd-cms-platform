@@ -10,7 +10,7 @@ class ContactInquiryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ContactInquiry::query();
+        $query = ContactInquiry::forSite(adminSiteId());
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -25,7 +25,7 @@ class ContactInquiryController extends Controller
         }
 
         $inquiries = $query->latest()->paginate(15);
-        $newCount = ContactInquiry::new()->count();
+        $newCount = ContactInquiry::forSite(adminSiteId())->new()->count();
 
         return view('admin.inquiries.index', compact('inquiries', 'newCount'));
     }

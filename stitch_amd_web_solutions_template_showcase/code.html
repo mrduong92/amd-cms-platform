@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AMD AI Custom Web Solutions - DỰ ÁN TIÊU BIỂU</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3b82f6",
+                        accent: "#a855f7",
+                        "background-dark": "#030712",
+                        "card-dark": "#111827",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body { @apply bg-background-dark text-slate-100 font-display selection:bg-primary/30; }
+        }
+        .glow-blue { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+        .glow-purple { box-shadow: 0 0 20px rgba(168, 85, 247, 0.3); }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            background-color: rgba(3, 7, 18, 0.8);
+        }
+        .gradient-text {
+            @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500;
+        }
+        .mockup-container {
+            position: relative;
+            perspective: 1000px;
+        }
+        .desktop-view {
+            transition: transform 0.5s ease;
+        }
+        .mobile-view {
+            position: absolute;
+            bottom: -10px;
+            right: 10px;
+            width: 30%;
+            height: 70%;
+            border: 4px solid #1f2937;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        .category-chip {
+            @apply px-4 py-1.5 rounded-full text-xs font-semibold border border-slate-700 hover:border-primary hover:text-primary transition-all cursor-pointer whitespace-nowrap;
+        }
+        .category-chip.active {
+            @apply bg-primary/10 border-primary text-primary;
+        }
+    </style>
+</head>
+<body class="bg-background-dark">
+<nav class="sticky top-0 z-50 glass-nav border-b border-slate-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-20 items-center">
+<div class="flex items-center gap-3">
+<div class="bg-gradient-to-br from-primary to-accent p-2 rounded-xl text-white shadow-lg">
+<span class="material-symbols-outlined text-2xl block">neurology</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">AMD AI SOLUTIONS</span>
+<span class="text-[10px] uppercase tracking-widest text-primary font-bold">Webco.io.vn</span>
+</div>
+</div>
+<div class="hidden md:flex items-center space-x-10 text-sm font-medium">
+<a class="text-slate-300 hover:text-white transition-colors" href="#">Quy trình AI</a>
+<a class="text-white border-b border-primary transition-colors" href="#">Dự án Tiêu biểu</a>
+<a class="text-slate-300 hover:text-white transition-colors" href="#">Bảng giá</a>
+<a class="text-slate-300 hover:text-white transition-colors" href="#">Ưu thế</a>
+</div>
+<div class="flex items-center gap-4">
+<a class="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all glow-blue" href="#">Tư vấn Web AI</a>
+</div>
+</div>
+</div>
+</nav>
+<header class="relative py-20 md:py-28 overflow-hidden border-b border-slate-800/50">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/50 border border-slate-700 mb-8">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="text-xs font-semibold text-slate-300 uppercase tracking-widest">Kỷ nguyên Website 4.0</span>
+</div>
+<h1 class="text-4xl md:text-6xl font-black mb-8 leading-tight tracking-tight">
+            Website Thiết Kế Riêng Với <br/>
+<span class="gradient-text">Chi Phí Mẫu Cố Định</span>
+<span class="block text-2xl md:text-3xl mt-4 font-light">- Sức Mạnh Từ AI -</span>
+</h1>
+<p class="text-lg text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed">
+            AMD tái định nghĩa việc xây dựng thương hiệu số cho SME. Chúng tôi kết hợp trí tuệ nhân tạo để tạo ra các website độc bản, chuẩn SEO với tốc độ hoàn thiện gấp 5 lần.
+        </p>
+</div>
+<div class="absolute top-0 left-0 w-full h-full pointer-events-none">
+<div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px]"></div>
+</div>
+</header>
+<section class="py-24 bg-slate-950/50 relative overflow-hidden">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-16">
+<h2 class="text-3xl md:text-4xl font-bold mb-4">Quy trình vận hành bằng AI</h2>
+<p class="text-slate-400">Tối ưu hóa thời gian và chất lượng bằng công nghệ độc quyền</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+<div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-slate-800 to-transparent -translate-y-1/2 -z-10"></div>
+<div class="relative flex flex-col items-center group">
+<div class="w-20 h-20 bg-card-dark border border-slate-700 rounded-3xl flex items-center justify-center mb-8 shadow-2xl group-hover:border-primary transition-all glow-blue">
+<span class="material-symbols-outlined text-4xl text-primary">analytics</span>
+</div>
+<h3 class="text-xl font-bold mb-4">1. AI Analysis</h3>
+<p class="text-slate-400 text-center px-4">AI phân tích ngành nghề, đối thủ và hành vi người dùng để đề xuất cấu trúc web tối ưu nhất.</p>
+</div>
+<div class="relative flex flex-col items-center group">
+<div class="w-20 h-20 bg-card-dark border border-slate-700 rounded-3xl flex items-center justify-center mb-8 shadow-2xl group-hover:border-accent transition-all glow-purple">
+<span class="material-symbols-outlined text-4xl text-accent">draw</span>
+</div>
+<h3 class="text-xl font-bold mb-4">2. AI Design</h3>
+<p class="text-slate-400 text-center px-4">Tự động hóa việc phối màu, layout và sinh nội dung theo bản sắc thương hiệu riêng biệt của bạn.</p>
+</div>
+<div class="relative flex flex-col items-center group">
+<div class="w-20 h-20 bg-card-dark border border-slate-700 rounded-3xl flex items-center justify-center mb-8 shadow-2xl group-hover:border-green-500 transition-all">
+<span class="material-symbols-outlined text-4xl text-green-500">speed</span>
+</div>
+<h3 class="text-xl font-bold mb-4">3. Rapid Completion</h3>
+<p class="text-slate-400 text-center px-4">Đóng gói mã nguồn chuẩn SEO và bàn giao vận hành chỉ sau 48h làm việc.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24" id="projects">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col md:flex-row justify-between items-center mb-16 gap-8">
+<div class="text-center md:text-left">
+<div class="flex items-center gap-2 justify-center md:justify-start mb-2">
+<span class="w-10 h-[1px] bg-primary"></span>
+<span class="text-primary text-sm font-bold tracking-widest uppercase">Portfolio</span>
+</div>
+<h2 class="text-4xl md:text-5xl font-black mb-4">DỰ ÁN TIÊU BIỂU</h2>
+<p class="text-slate-400 max-w-lg">Khám phá các website "Độc bản" được AMD AI Solutions thiết kế riêng cho các đối tác SME đa lĩnh vực.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-3">
+<div class="category-chip active">Tất cả</div>
+<div class="category-chip">Bất động sản</div>
+<div class="category-chip">Thương mại điện tử</div>
+<div class="category-chip">Làm đẹp/Spa</div>
+<div class="category-chip">Xây dựng</div>
+<div class="category-chip">Giáo dục</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16">
+<div class="group">
+<div class="mockup-container mb-8">
+<div class="desktop-view aspect-video rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 group-hover:border-primary/50 transition-all duration-500">
+<img alt="Nexus Real Estate Desktop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlz9m5Efda3O-cjkLq4nD_FRANdaz4sfCDr9Z-IWNd6HNtX5YqKAct8dynLSLv30Y1bupWG7juQLe2wIMQmhnsX0DOEGo677TSCLdS5-PLkBc2gFtTeQ4k2R9IKU0ZagDuiyNVJjf2HpyiarOMvFFMsPzlpfm6JCDmzWvLaXarHt7bAW3YcOd9VEut_Yu6YJ-F1Ys0dXKv9-MFPKhLnTsfFSQwRDpR9_V_IpZjukHMtxO-h_bfOlbj80AzOQfiS_pkBlwbsfV48A"/>
+</div>
+<div class="mobile-view bg-slate-900 border-slate-700 group-hover:border-primary/50 transition-all duration-500">
+<img alt="Nexus Mobile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlz9m5Efda3O-cjkLq4nD_FRANdaz4sfCDr9Z-IWNd6HNtX5YqKAct8dynLSLv30Y1bupWG7juQLe2wIMQmhnsX0DOEGo677TSCLdS5-PLkBc2gFtTeQ4k2R9IKU0ZagDuiyNVJjf2HpyiarOMvFFMsPzlpfm6JCDmzWvLaXarHt7bAW3YcOd9VEut_Yu6YJ-F1Ys0dXKv9-MFPKhLnTsfFSQwRDpR9_V_IpZjukHMtxO-h_bfOlbj80AzOQfiS_pkBlwbsfV48A"/>
+</div>
+<div class="absolute top-4 left-4 z-20">
+<span class="bg-primary/90 text-white text-[10px] px-3 py-1.5 rounded-full font-bold uppercase flex items-center gap-1.5 shadow-xl backdrop-blur-md">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                            AI POWERED
+                        </span>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<span class="text-xs font-bold text-primary uppercase tracking-widest mb-2 block">Bất động sản</span>
+<h3 class="text-2xl font-bold text-white mb-2">Nexus Premier Lands</h3>
+<p class="text-slate-400 text-sm max-w-md">Hệ thống quản lý giỏ hàng real-time, tích hợp AI chatbot hỗ trợ khách hàng xem nhà 24/7.</p>
+</div>
+<div class="text-right">
+<div class="text-slate-500 text-xs mb-1">Dự án hoàn thiện</div>
+<div class="text-white font-bold">48 Giờ</div>
+</div>
+</div>
+</div>
+<div class="group">
+<div class="mockup-container mb-8">
+<div class="desktop-view aspect-video rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 group-hover:border-accent/50 transition-all duration-500">
+<img alt="E-commerce Project" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgBYZ7uswBJ6Bm0eWJweWFyjOpYW4xiiNKbOqnkqglgzMvs0KiXcrbFzLf5_G9jRiQMTlTgCCPDBuZGc4R_Y4KOesR-4oP8w-h-HSZJBYl6Q9VHifwW6_AsHRWaYFkmjdTWTkXWqPtOPDytJeaUceqoNZPBdV8n_273yxnRncjruDWtPJey4HIE2vAqwTxLSGwXL6BbTEOwOQOReSZx_wTJyRChryh474ACJfP-Sm9KzMgmu-Xk6-WXJj8zm0XCZy-7MfAVeHVWsc"/>
+</div>
+<div class="mobile-view bg-slate-900 border-slate-700 group-hover:border-accent/50 transition-all duration-500">
+<img alt="E-commerce Mobile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgBYZ7uswBJ6Bm0eWJweWFyjOpYW4xiiNKbOqnkqglgzMvs0KiXcrbFzLf5_G9jRiQMTlTgCCPDBuZGc4R_Y4KOesR-4oP8w-h-HSZJBYl6Q9VHifwW6_AsHRWaYFkmjdTWTkXWqPtOPDytJeaUceqoNZPBdV8n_273yxnRncjruDWtPJey4HIE2vAqwTxLSGwXL6BbTEOwOQOReSZx_wTJyRChryh474ACJfP-Sm9KzMgmu-Xk6-WXJj8zm0XCZy-7MfAVeHVWsc"/>
+</div>
+<div class="absolute top-4 left-4 z-20">
+<span class="bg-accent/90 text-white text-[10px] px-3 py-1.5 rounded-full font-bold uppercase flex items-center gap-1.5 shadow-xl backdrop-blur-md">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                            AI POWERED
+                        </span>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<span class="text-xs font-bold text-accent uppercase tracking-widest mb-2 block">Thương mại điện tử</span>
+<h3 class="text-2xl font-bold text-white mb-2">EcoTech Mart</h3>
+<p class="text-slate-400 text-sm max-w-md">Nền tảng mua sắm xanh với AI phân tích hành vi để đề xuất sản phẩm cá nhân hóa tối ưu chuyển đổi.</p>
+</div>
+<div class="text-right">
+<div class="text-slate-500 text-xs mb-1">Dự án hoàn thiện</div>
+<div class="text-white font-bold">72 Giờ</div>
+</div>
+</div>
+</div>
+<div class="group">
+<div class="mockup-container mb-8">
+<div class="desktop-view aspect-video rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 group-hover:border-pink-500/50 transition-all duration-500">
+<img alt="Spa Project" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVjtpdGYrrbtQQDfETUEdfNZAJqoGdpzLwxm-8IflabdT2FwJus4zDwMTXTZQ-i2JcXS3NYMtDTXgfrSutIxIGKHW3e7GlCycqjL8NU8DVP97aCHZ3EGKVbf7q8QW98XERc5f5yoaSQ0Do3GyEpsyE4s0976_2yHtRqCYS_iie7x1HFF4fkyfcfpl9xq831n8PSD_X1wkdv3s7_71mdG-jxpBphpWJWcBJGkVEX6G-y2pVqslYXgyPqr6S78SeEC5v-BSQ5t2cBpE"/>
+</div>
+<div class="mobile-view bg-slate-900 border-slate-700 group-hover:border-pink-500/50 transition-all duration-500">
+<img alt="Spa Mobile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVjtpdGYrrbtQQDfETUEdfNZAJqoGdpzLwxm-8IflabdT2FwJus4zDwMTXTZQ-i2JcXS3NYMtDTXgfrSutIxIGKHW3e7GlCycqjL8NU8DVP97aCHZ3EGKVbf7q8QW98XERc5f5yoaSQ0Do3GyEpsyE4s0976_2yHtRqCYS_iie7x1HFF4fkyfcfpl9xq831n8PSD_X1wkdv3s7_71mdG-jxpBphpWJWcBJGkVEX6G-y2pVqslYXgyPqr6S78SeEC5v-BSQ5t2cBpE"/>
+</div>
+<div class="absolute top-4 left-4 z-20">
+<span class="bg-pink-600/90 text-white text-[10px] px-3 py-1.5 rounded-full font-bold uppercase flex items-center gap-1.5 shadow-xl backdrop-blur-md">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                            AI POWERED
+                        </span>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<span class="text-xs font-bold text-pink-500 uppercase tracking-widest mb-2 block">Làm đẹp/Spa</span>
+<h3 class="text-2xl font-bold text-white mb-2">Aura Beauty &amp; Spa</h3>
+<p class="text-slate-400 text-sm max-w-md">Giao diện sang trọng tích hợp AI đặt lịch hẹn thông minh và phân tích loại da tự động cho khách hàng.</p>
+</div>
+<div class="text-right">
+<div class="text-slate-500 text-xs mb-1">Dự án hoàn thiện</div>
+<div class="text-white font-bold">48 Giờ</div>
+</div>
+</div>
+</div>
+<div class="group">
+<div class="mockup-container mb-8">
+<div class="desktop-view aspect-video rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 group-hover:border-orange-500/50 transition-all duration-500">
+<img alt="Construction Project" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlz9m5Efda3O-cjkLq4nD_FRANdaz4sfCDr9Z-IWNd6HNtX5YqKAct8dynLSLv30Y1bupWG7juQLe2wIMQmhnsX0DOEGo677TSCLdS5-PLkBc2gFtTeQ4k2R9IKU0ZagDuiyNVJjf2HpyiarOMvFFMsPzlpfm6JCDmzWvLaXarHt7bAW3YcOd9VEut_Yu6YJ-F1Ys0dXKv9-MFPKhLnTsfFSQwRDpR9_V_IpZjukHMtxO-h_bfOlbj80AzOQfiS_pkBlwbsfV48A"/>
+</div>
+<div class="mobile-view bg-slate-900 border-slate-700 group-hover:border-orange-500/50 transition-all duration-500">
+<img alt="Construction Mobile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARlz9m5Efda3O-cjkLq4nD_FRANdaz4sfCDr9Z-IWNd6HNtX5YqKAct8dynLSLv30Y1bupWG7juQLe2wIMQmhnsX0DOEGo677TSCLdS5-PLkBc2gFtTeQ4k2R9IKU0ZagDuiyNVJjf2HpyiarOMvFFMsPzlpfm6JCDmzWvLaXarHt7bAW3YcOd9VEut_Yu6YJ-F1Ys0dXKv9-MFPKhLnTsfFSQwRDpR9_V_IpZjukHMtxO-h_bfOlbj80AzOQfiS_pkBlwbsfV48A"/>
+</div>
+<div class="absolute top-4 left-4 z-20">
+<span class="bg-orange-600/90 text-white text-[10px] px-3 py-1.5 rounded-full font-bold uppercase flex items-center gap-1.5 shadow-xl backdrop-blur-md">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                            AI POWERED
+                        </span>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<span class="text-xs font-bold text-orange-500 uppercase tracking-widest mb-2 block">Xây dựng</span>
+<h3 class="text-2xl font-bold text-white mb-2">Grand Arch Build</h3>
+<p class="text-slate-400 text-sm max-w-md">Showcase dự án 3D với AI tối ưu hóa hình ảnh độ phân giải cao giúp tăng tốc độ tải trang gấp 3 lần.</p>
+</div>
+<div class="text-right">
+<div class="text-slate-500 text-xs mb-1">Dự án hoàn thiện</div>
+<div class="text-white font-bold">60 Giờ</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-20 text-center">
+<button class="px-12 py-4 border-2 border-slate-800 hover:border-primary rounded-full font-bold text-slate-300 hover:text-white transition-all">
+                Xem Thêm Dự Án Khác
+            </button>
+</div>
+</div>
+</section>
+<section class="py-24 bg-slate-950">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-16">
+<h2 class="text-3xl md:text-4xl font-bold mb-4">Sự Khác Biệt Từ AMD AI</h2>
+<p class="text-slate-400">Tại sao chúng tôi vượt trội hơn so với cách làm truyền thống</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="p-10 rounded-[2.5rem] bg-slate-900/50 border border-slate-800 relative group opacity-70">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-slate-500">warning</span>
+<h3 class="text-2xl font-bold text-slate-400">Thiết Kế Truyền Thống</h3>
+</div>
+<ul class="space-y-6">
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-red-500">history</span>
+<span class="text-slate-300">Thời gian chờ đợi 3-4 tuần</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-red-500">payments</span>
+<span class="text-slate-300">Chi phí cao (15tr - 30tr+)</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-red-500">error</span>
+<span class="text-slate-300">Khó tối ưu hóa sau khi bàn giao</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-red-500">hourglass_empty</span>
+<span class="text-slate-300">Quy trình thủ công dễ sai sót</span>
+</li>
+</ul>
+</div>
+<div class="p-10 rounded-[2.5rem] bg-gradient-to-br from-slate-900 to-slate-800 border-2 border-primary relative group glow-blue">
+<div class="absolute -top-4 right-8 bg-primary text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter">Recommended</div>
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary">verified</span>
+<h3 class="text-2xl font-bold">AMD AI SOLUTIONS</h3>
+</div>
+<ul class="space-y-6">
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-green-500">check_circle</span>
+<span class="text-white font-medium">Bàn giao thần tốc (2-5 ngày)</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-green-500">check_circle</span>
+<span class="text-white font-medium">Chi phí cố định cực thấp (từ 2.9tr)</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-green-500">check_circle</span>
+<span class="text-white font-medium">Thiết kế Custom theo yêu cầu</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-green-500">check_circle</span>
+<span class="text-white font-medium">AI Tối ưu hóa SEO &amp; Chuyển đổi</span>
+</li>
+</ul>
+<div class="mt-10 pt-8 border-t border-slate-700">
+<button class="w-full bg-primary py-4 rounded-2xl font-bold text-lg hover:bg-blue-600 transition-all">Sử dụng giải pháp AMD AI</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 relative overflow-hidden">
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+<div class="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 p-12 md:p-20 rounded-[3rem] border border-slate-800 shadow-3xl">
+<h2 class="text-4xl font-bold mb-6">Sẵn sàng để bùng nổ doanh số?</h2>
+<p class="text-slate-400 text-lg mb-10">Đăng ký để AI của chúng tôi phân tích website cũ hoặc đề xuất giải pháp cho website mới của bạn hoàn toàn miễn phí.</p>
+<form class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+<input class="flex-1 px-8 py-5 rounded-3xl bg-slate-800 border-none text-white focus:ring-2 focus:ring-primary" placeholder="Email của bạn..." type="email"/>
+<button class="bg-gradient-to-r from-primary to-accent text-white px-10 py-5 rounded-3xl font-bold hover:opacity-90 transition-all shadow-xl">Nhận tư vấn</button>
+</form>
+<div class="mt-8 flex items-center justify-center gap-8 text-xs text-slate-500 font-medium">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">shield</span> Bảo mật 100%</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">bolt</span> Phản hồi trong 5 phút</span>
+</div>
+</div>
+</div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 rounded-full blur-[100px] -z-10"></div>
+</section>
+<footer class="bg-slate-950 border-t border-slate-900 pt-24 pb-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-2 mb-8">
+<div class="bg-primary p-2 rounded-lg text-white">
+<span class="material-symbols-outlined text-2xl block">neurology</span>
+</div>
+<span class="text-2xl font-bold tracking-tight text-white">AMD AI</span>
+</div>
+<p class="text-sm text-slate-400 leading-relaxed mb-6">
+                    Tiên phong ứng dụng Generative AI vào thiết kế Website SME tại Việt Nam. Xây dựng tương lai số cho mọi doanh nghiệp.
+                </p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-slate-400 hover:text-primary transition-colors border border-slate-800" href="#">
+<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
+</a>
+</div>
+</div>
+<div>
+<h5 class="text-white font-bold mb-8 uppercase tracking-widest text-xs">Giải pháp AI</h5>
+<ul class="space-y-4 text-sm text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">Thiết kế Custom AI</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Tối ưu hóa SEO AI</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Landing Page Chuyển Đổi</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Hệ thống quản trị SME</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-white font-bold mb-8 uppercase tracking-widest text-xs">Thông tin</h5>
+<ul class="space-y-4 text-sm text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">Quy trình vận hành</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Báo giá chi tiết</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Chính sách bảo mật</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Điều khoản sử dụng</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-white font-bold mb-8 uppercase tracking-widest text-xs">Liên hệ</h5>
+<ul class="space-y-4 text-sm text-slate-400">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-sm mt-1">location_on</span>
+                        Hà Nội, Việt Nam
+                    </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">mail</span>
+                        amdnewtech68@gmail.com
+                    </li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm">phone</span>
+                        028 7777 9999
+                    </li>
+</ul>
+</div>
+</div>
+<div class="pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+<p>© 2024 AMD AI SOLUTIONS. Một sản phẩm của webco.io.vn</p>
+<div class="flex gap-8">
+<a class="hover:text-white transition-colors" href="#">Facebook</a>
+<a class="hover:text-white transition-colors" href="#">LinkedIn</a>
+<a class="hover:text-white transition-colors" href="#">Youtube</a>
+</div>
+</div>
+</div>
+</footer>
+
+</body></html>

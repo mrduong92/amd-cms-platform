@@ -12,7 +12,19 @@ class SettingController extends Controller
     public function index(Request $request)
     {
         $group = $request->get('group', 'general');
-        $settings = Setting::getByGroup($group);
+        $siteId = adminSiteId();
+
+        // Get settings for current site, falling back to global settings
+        $settings = Setting::where('group', $group)
+            ->where(function ($q) use ($siteId) {
+                $q->where('site_id', $siteId)
+                  ->orWhereNull('site_id');
+            })
+            ->orderBy('site_id', 'desc') // Site-specific first
+            ->orderBy('order')
+            ->get()
+            ->unique('key'); // Remove duplicates, keeping site-specific
+
         $groups = Setting::distinct()->pluck('group');
 
         return view('admin.settings.index', compact('settings', 'groups', 'group'));
@@ -21,11 +33,32 @@ class SettingController extends Controller
     public function update(Request $request)
     {
         $settings = $request->except(['_token', 'group']);
+        $siteId = adminSiteId();
 
         foreach ($settings as $key => $value) {
-            $setting = Setting::where('key', $key)->first();
+            // First, try to find site-specific setting
+            $setting = Setting::where('key', $key)->where('site_id', $siteId)->first();
 
             if (!$setting) {
+                // Find global setting as template
+                $globalSetting = Setting::where('key', $key)->whereNull('site_id')->first();
+
+                if (!$globalSetting) {
+                    continue;
+                }
+
+                // Create site-specific setting based on global template
+                $setting = Setting::create([
+                    'site_id' => $siteId,
+                    'key' => $key,
+                    'value' => $value,
+                    'type' => $globalSetting->type,
+                    'group' => $globalSetting->group,
+                    'label' => $globalSetting->label,
+                    'description' => $globalSetting->description,
+                    'order' => $globalSetting->order,
+                ]);
+
                 continue;
             }
 
@@ -38,7 +71,8 @@ class SettingController extends Controller
                 $value = $request->file($key)->store('settings', 'public');
             }
 
-            Setting::set($key, $value);
+            $setting->update(['value' => $value]);
+            Setting::clearCache();
         }
 
         return redirect()->route('admin.settings.index', ['group' => $request->group ?? 'general'])
