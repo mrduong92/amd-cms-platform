@@ -17,9 +17,30 @@
             {!! setting('hero_title', 'Website Thiết Kế Riêng Với <br/><span class="gradient-text">Chi Phí Mẫu Cố Định</span>') !!}
             <span class="block text-2xl md:text-3xl mt-4 font-light">{{ setting('hero_subtitle', '- Sức Mạnh Từ AI -') }}</span>
         </h1>
-        <p class="text-lg text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed">
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed">
             {{ setting('hero_description', 'AMD tái định nghĩa việc xây dựng thương hiệu số cho SME. Chúng tôi kết hợp trí tuệ nhân tạo để tạo ra các website độc bản, chuẩn SEO với tốc độ hoàn thiện gấp 5 lần.') }}
         </p>
+
+        <!-- Hero CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="{{ route('contact') }}" class="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent text-white px-8 py-4 rounded-full font-bold hover:opacity-90 transition-all shadow-xl">
+                <span class="material-symbols-outlined">rocket_launch</span>
+                {{ setting('cta_button_text', 'Tư vấn Web AI') }}
+            </a>
+            @if(setting('contact_phone'))
+            <a href="tel:{{ setting('contact_phone') }}" class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold transition-all">
+                <span class="material-symbols-outlined">call</span>
+                {{ setting('contact_phone') }}
+            </a>
+            @endif
+        </div>
+
+        @if(setting('site_tagline'))
+        <p class="mt-8 text-sm text-slate-500">
+            <span class="material-symbols-outlined text-primary text-sm align-middle">verified</span>
+            {{ setting('site_tagline') }}
+        </p>
+        @endif
     </div>
     <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]"></div>
@@ -70,11 +91,11 @@
         <div class="text-center mb-16">
             <div class="flex items-center gap-2 justify-center mb-4">
                 <span class="w-10 h-[1px] bg-primary"></span>
-                <span class="text-primary text-sm font-bold tracking-widest uppercase">Đa ngành nghề</span>
+                <span class="text-primary text-sm font-bold tracking-widest uppercase">{{ setting('industries_badge', 'Đa ngành nghề') }}</span>
                 <span class="w-10 h-[1px] bg-primary"></span>
             </div>
-            <h2 class="text-3xl md:text-4xl font-bold mb-4">Website chuyên biệt cho <span class="gradient-text">20+ ngành nghề</span></h2>
-            <p class="text-slate-400 max-w-2xl mx-auto">Dù bạn kinh doanh trong lĩnh vực nào, AMD AI Solutions đều có giải pháp website được tối ưu riêng cho ngành của bạn.</p>
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">{!! setting('industries_title', 'Website chuyên biệt cho <span class="gradient-text">20+ ngành nghề</span>') !!}</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">{{ setting('industries_description', 'Dù bạn kinh doanh trong lĩnh vực nào, ' . setting('site_name', 'AMD AI Solutions') . ' đều có giải pháp website được tối ưu riêng cho ngành của bạn.') }}</p>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -132,10 +153,10 @@
             <div class="text-center md:text-left">
                 <div class="flex items-center gap-2 justify-center md:justify-start mb-2">
                     <span class="w-10 h-[1px] bg-primary"></span>
-                    <span class="text-primary text-sm font-bold tracking-widest uppercase">Portfolio</span>
+                    <span class="text-primary text-sm font-bold tracking-widest uppercase">{{ setting('projects_badge', 'Portfolio') }}</span>
                 </div>
-                <h2 class="text-4xl md:text-5xl font-black mb-4">DỰ ÁN TIÊU BIỂU</h2>
-                <p class="text-slate-400 max-w-lg">Khám phá các website "Độc bản" được AMD AI Solutions thiết kế riêng cho các đối tác SME đa lĩnh vực.</p>
+                <h2 class="text-4xl md:text-5xl font-black mb-4">{{ setting('projects_title', 'DỰ ÁN TIÊU BIỂU') }}</h2>
+                <p class="text-slate-400 max-w-lg">{{ setting('projects_description', 'Khám phá các website "Độc bản" được ' . setting('site_name', 'AMD AI Solutions') . ' thiết kế riêng cho các đối tác SME đa lĩnh vực.') }}</p>
             </div>
         </div>
 
@@ -190,8 +211,8 @@
 <section class="py-24 bg-slate-950">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold mb-4">Sự Khác Biệt Từ AMD AI</h2>
-            <p class="text-slate-400">Tại sao chúng tôi vượt trội hơn so với cách làm truyền thống</p>
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">{{ setting('comparison_title', 'Sự Khác Biệt Từ ' . setting('site_name', 'AMD AI')) }}</h2>
+            <p class="text-slate-400">{{ setting('comparison_subtitle', 'Tại sao chúng tôi vượt trội hơn so với cách làm truyền thống') }}</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Traditional -->
@@ -225,28 +246,28 @@
                 <div class="absolute -top-4 right-8 bg-primary text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-tighter">Recommended</div>
                 <div class="flex items-center gap-3 mb-8">
                     <span class="material-symbols-outlined text-primary">verified</span>
-                    <h3 class="text-2xl font-bold">AMD AI SOLUTIONS</h3>
+                    <h3 class="text-2xl font-bold">{{ setting('site_name', 'AMD AI SOLUTIONS') }}</h3>
                 </div>
                 <ul class="space-y-6">
                     <li class="flex items-center gap-4">
                         <span class="material-symbols-outlined text-green-500">check_circle</span>
-                        <span class="text-white font-medium">Bàn giao thần tốc (2-5 ngày)</span>
+                        <span class="text-white font-medium">{{ setting('benefit_1', 'Bàn giao thần tốc (2-5 ngày)') }}</span>
                     </li>
                     <li class="flex items-center gap-4">
                         <span class="material-symbols-outlined text-green-500">check_circle</span>
-                        <span class="text-white font-medium">Chi phí cố định cực thấp (từ 2.9tr)</span>
+                        <span class="text-white font-medium">{{ setting('benefit_2', 'Chi phí cố định cực thấp (từ 2.9tr)') }}</span>
                     </li>
                     <li class="flex items-center gap-4">
                         <span class="material-symbols-outlined text-green-500">check_circle</span>
-                        <span class="text-white font-medium">Thiết kế Custom theo yêu cầu</span>
+                        <span class="text-white font-medium">{{ setting('benefit_3', 'Thiết kế Custom theo yêu cầu') }}</span>
                     </li>
                     <li class="flex items-center gap-4">
                         <span class="material-symbols-outlined text-green-500">check_circle</span>
-                        <span class="text-white font-medium">AI Tối ưu hóa SEO & Chuyển đổi</span>
+                        <span class="text-white font-medium">{{ setting('benefit_4', 'AI Tối ưu hóa SEO & Chuyển đổi') }}</span>
                     </li>
                 </ul>
                 <div class="mt-10 pt-8 border-t border-slate-700">
-                    <a href="{{ route('contact') }}" class="block w-full bg-primary py-4 rounded-2xl font-bold text-lg hover:bg-blue-600 transition-all text-center">Sử dụng giải pháp AMD AI</a>
+                    <a href="{{ route('contact') }}" class="block w-full bg-primary py-4 rounded-2xl font-bold text-lg hover:bg-blue-600 transition-all text-center">{{ setting('cta_button_text', 'Tư vấn Web AI') }}</a>
                 </div>
             </div>
         </div>
@@ -261,10 +282,10 @@
             <div class="text-center md:text-left">
                 <div class="flex items-center gap-2 justify-center md:justify-start mb-2">
                     <span class="w-10 h-[1px] bg-accent"></span>
-                    <span class="text-accent text-sm font-bold tracking-widest uppercase">Blog</span>
+                    <span class="text-accent text-sm font-bold tracking-widest uppercase">{{ setting('news_badge', 'Blog') }}</span>
                 </div>
-                <h2 class="text-4xl md:text-5xl font-black mb-4">TIN TỨC & KIẾN THỨC</h2>
-                <p class="text-slate-400 max-w-lg">Cập nhật những xu hướng mới nhất về AI, thiết kế web và marketing số từ đội ngũ AMD.</p>
+                <h2 class="text-4xl md:text-5xl font-black mb-4">{{ setting('news_title', 'TIN TỨC & KIẾN THỨC') }}</h2>
+                <p class="text-slate-400 max-w-lg">{{ setting('news_description', 'Cập nhật những xu hướng mới nhất về AI, thiết kế web và marketing số từ đội ngũ ' . setting('site_name', 'AMD') . '.') }}</p>
             </div>
             <a href="{{ route('posts.index', ['type' => 'news']) }}" class="px-8 py-3 border border-slate-700 hover:border-accent rounded-full font-semibold text-slate-300 hover:text-white transition-all inline-flex items-center gap-2">
                 Xem tất cả
