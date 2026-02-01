@@ -136,7 +136,7 @@
 
                 <!-- Contact Inquiries -->
                 @php
-                    $newInquiriesCount = \App\Models\ContactInquiry::new()->count();
+                    $newInquiriesCount = \App\Models\ContactInquiry::forSite(adminSiteId())->new()->count();
                 @endphp
                 <li class="nav-item">
                     <a href="{{ route('admin.inquiries.index') }}" class="nav-link {{ request()->routeIs('admin.inquiries.*') ? 'active' : '' }}">
@@ -163,6 +163,14 @@
                     <a href="{{ route('admin.settings.index') }}" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-sliders"></i>
                         <p>Cài đặt</p>
+                    </a>
+                </li>
+
+                <!-- Sites -->
+                <li class="nav-item">
+                    <a href="{{ route('admin.sites.index') }}" class="nav-link {{ request()->routeIs('admin.sites.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-globe"></i>
+                        <p>Website</p>
                     </a>
                 </li>
 

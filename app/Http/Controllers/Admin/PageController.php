@@ -10,7 +10,7 @@ class PageController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Page::query();
+        $query = Page::forSite(adminSiteId());
 
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
@@ -40,6 +40,7 @@ class PageController extends Controller
 
         $validated['is_active'] = $request->boolean('is_active');
         $validated['template'] = $validated['template'] ?? 'default';
+        $validated['site_id'] = adminSiteId();
 
         // Handle image from file manager (convert URL to storage path)
         if (!empty($validated['image'])) {

@@ -12,13 +12,49 @@ use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
+    /**
+     * Get the current theme
+     */
+    protected function getTheme(): string
+    {
+        $site = currentSite();
+        return $site?->theme ?? 'frontend';
+    }
+
     public function index()
     {
-        return view('frontend.contact');
+        $theme = $this->getTheme();
+        return view($theme . '.contact');
     }
 
     public function submit(Request $request)
     {
+        $theme = $this->getTheme();
+
+        // AMD theme has simplified form (only phone required)
+        if ($theme === 'amd') {
+            $validated = $request->validate([
+                'phone' => ['required', 'string', 'regex:/^[0-9]{10,11}$/'],
+                'subject' => 'nullable|string|max:255',
+                'message' => 'nullable|string|max:5000',
+            ], [
+                'phone.required' => 'Vui lòng nhập số điện thoại.',
+                'phone.regex' => 'Số điện thoại phải có 10-11 chữ số.',
+            ]);
+
+            ContactInquiry::create([
+                'site_id' => currentSite()?->id,
+                'phone' => $validated['phone'],
+                'subject' => $validated['subject'] ?? 'Yêu cầu tư vấn từ website',
+                'message' => $validated['message'] ?? null,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            return back()->with('success', 'Cảm ơn bạn! Chúng tôi sẽ liên hệ lại trong vòng 5 phút.');
+        }
+
+        // NMT AUTO theme validation
         $validated = $request->validate([
             'phone' => ['required', 'string', 'regex:/^[0-9]{10}$/'],
             'message' => 'required|string|max:5000',
@@ -51,6 +87,7 @@ class ContactController extends Controller
         }
 
         ContactInquiry::create([
+            'site_id' => currentSite()?->id,
             'phone' => $validated['phone'],
             'message' => $validated['message'],
             'ip_address' => $request->ip(),

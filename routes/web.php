@@ -10,8 +10,9 @@ use App\Http\Controllers\Frontend\ServiceController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// Frontend Routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
+// Frontend Routes with site detection
+Route::middleware(['detect.site'])->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Search
 Route::get('/tim-kiem', [SearchController::class, 'index'])->name('search');
@@ -49,7 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Dynamic Pages (should be last)
-Route::get('/{slug}', [PageController::class, 'show'])->name('pages.show')->where('slug', '^(?!admin|api|login|register|logout|password|profile|storage).*$');
+    // Dynamic Pages (should be last)
+    Route::get('/{slug}', [PageController::class, 'show'])->name('pages.show')->where('slug', '^(?!admin|api|login|register|logout|password|profile|storage).*$');
+});
 
 require __DIR__.'/auth.php';

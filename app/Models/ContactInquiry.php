@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\HasSiteScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ContactInquiry extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasSiteScope;
 
     protected $fillable = [
+        'site_id',
         'name',
         'email',
         'phone',

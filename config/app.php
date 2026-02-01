@@ -123,4 +123,19 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Default Site
+    |--------------------------------------------------------------------------
+    |
+    | This value determines which site to use as default when the domain
+    | cannot be matched. This is useful for multi-site setups where you
+    | want a specific site to be the fallback.
+    |
+    | Supported: "nmtauto", "amd"
+    |
+    */
+
+    'default_site' => env('DEFAULT_SITE', 'nmtauto'),
+
 ];
