@@ -18,7 +18,7 @@ class PageController extends Controller
 
     public function show($slug)
     {
-        $page = Page::forCurrentSite()->where('slug', $slug)->active()->firstOrFail();
+        $page = Page::where('slug', $slug)->active()->firstOrFail();
 
         $theme = $this->getTheme();
 

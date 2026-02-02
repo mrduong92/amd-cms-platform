@@ -20,7 +20,7 @@ class PostController extends Controller
 
     public function index(Request $request)
     {
-        $query = Post::forCurrentSite()->with('category')->active()->published()->latest('published_at');
+        $query = Post::query()->with('category')->active()->published()->latest('published_at');
 
         if ($request->filled('type')) {
             $query->where('type', $request->type);
@@ -41,8 +41,8 @@ class PostController extends Controller
 
     public function show($slug)
     {
-        $post = Post::forCurrentSite()->where('slug', $slug)->active()->published()->with(['category', 'author'])->firstOrFail();
-        $relatedPosts = Post::forCurrentSite()
+        $post = Post::query()->where('slug', $slug)->active()->published()->with(['category', 'author'])->firstOrFail();
+        $relatedPosts = Post::query()
             ->with('category')
             ->where('id', '!=', $post->id)
             ->when($post->category_id, function ($q) use ($post) {
@@ -66,7 +66,7 @@ class PostController extends Controller
 
     public function projects(Request $request)
     {
-        $query = Post::forCurrentSite()
+        $query = Post::query()
             ->with('category')
             ->where('type', 'project')
             ->active()

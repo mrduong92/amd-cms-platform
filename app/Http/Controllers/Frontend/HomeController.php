@@ -30,7 +30,7 @@ class HomeController extends Controller
     {
         $site = currentSite();
         $theme = $site?->theme ?? 'frontend';
-        $cacheKey = self::CACHE_KEY . '_' . ($site?->id ?? 'default');
+        $cacheKey = self::CACHE_KEY . '_' . $theme;
 
         $data = Cache::remember($cacheKey, self::CACHE_TTL, function () use ($theme) {
             return $this->getHomepageData($theme);
@@ -40,18 +40,17 @@ class HomeController extends Controller
     }
 
     /**
-     * Get all homepage data
+     * Get all homepage data (shared across all sites)
      */
     protected function getHomepageData(string $theme = 'frontend'): array
     {
-        $sliders = Slider::forCurrentSite()->active()->ordered()->get();
-        $partners = Partner::forCurrentSite()->active()->ordered()->get();
+        $sliders = Slider::active()->ordered()->get();
+        $partners = Partner::active()->ordered()->get();
 
         // AMD theme has different homepage structure
         if ($theme === 'amd') {
             // Get projects for AMD with category eager loading
-            $projects = Post::forCurrentSite()
-                ->with('category')
+            $projects = Post::with('category')
                 ->projects()
                 ->active()
                 ->published()
@@ -60,8 +59,7 @@ class HomeController extends Controller
                 ->get();
 
             // Get news/blog posts for AMD
-            $news = Post::forCurrentSite()
-                ->with('category')
+            $news = Post::with('category')
                 ->news()
                 ->active()
                 ->published()
@@ -93,10 +91,10 @@ class HomeController extends Controller
         }
 
         // Get latest posts (news, projects, success stories)
-        $latestPosts = Post::forCurrentSite()->active()->published()->latest('published_at')->limit(4)->get();
+        $latestPosts = Post::active()->published()->latest('published_at')->limit(4)->get();
 
         // Get the "about" page for Core Values section
-        $aboutPage = Page::forCurrentSite()->where('slug', 'about')->active()->first();
+        $aboutPage = Page::where('slug', 'about')->active()->first();
 
         // Get social posts
         $socialPosts = SocialPost::active()->ordered()->get();
@@ -114,16 +112,11 @@ class HomeController extends Controller
     }
 
     /**
-     * Clear homepage cache for all sites
+     * Clear homepage cache
      */
     public static function clearCache(): void
     {
-        Cache::forget(self::CACHE_KEY . '_default');
-
-        // Clear cache for all sites
-        $sites = \App\Models\Site::all();
-        foreach ($sites as $site) {
-            Cache::forget(self::CACHE_KEY . '_' . $site->id);
-        }
+        Cache::forget(self::CACHE_KEY . '_frontend');
+        Cache::forget(self::CACHE_KEY . '_amd');
     }
 }

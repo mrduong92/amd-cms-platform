@@ -14,7 +14,7 @@
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center space-x-10 text-sm font-medium">
                 @php
-                    $headerMenus = \App\Models\Menu::forCurrentSite()->header()->topLevel()->active()->ordered()->with('activeChildren')->get();
+                    $headerMenus = \App\Models\Menu::header()->topLevel()->active()->ordered()->with('activeChildren')->get();
                 @endphp
                 @foreach($headerMenus as $menu)
                     <a class="text-slate-300 hover:text-white transition-colors {{ request()->is(trim($menu->computed_url, '/')) ? 'text-white border-b border-primary' : '' }}" href="{{ $menu->computed_url }}">

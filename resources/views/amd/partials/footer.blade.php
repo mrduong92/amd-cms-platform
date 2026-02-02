@@ -52,7 +52,7 @@
                 <h5 class="text-white font-bold mb-8 uppercase tracking-widest text-xs">Thông tin</h5>
                 <ul class="space-y-4 text-sm text-slate-400">
                     @php
-                        $footerMenus = \App\Models\Menu::forCurrentSite()->footer()->topLevel()->active()->ordered()->get();
+                        $footerMenus = \App\Models\Menu::footer()->topLevel()->active()->ordered()->get();
                     @endphp
                     @foreach($footerMenus as $menu)
                         <li><a class="hover:text-primary transition-colors" href="{{ $menu->computed_url }}">{{ $menu->name }}</a></li>
