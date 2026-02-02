@@ -73,19 +73,4 @@ class SiteController extends Controller
         return redirect()->route('admin.sites.index')
             ->with('success', 'Website đã được xóa.');
     }
-
-    /**
-     * Switch the current admin site context
-     */
-    public function switch(Request $request)
-    {
-        $validated = $request->validate([
-            'site_id' => 'required|exists:sites,id',
-        ]);
-
-        session(['admin_site_id' => $validated['site_id']]);
-
-        return redirect()->back()
-            ->with('success', 'Đã chuyển sang website khác.');
-    }
 }

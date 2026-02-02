@@ -112,6 +112,18 @@
                             </div>
                         </li>
                         @endif
+
+                        @if(setting('tax_id'))
+                        <li class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-primary">receipt_long</span>
+                            </div>
+                            <div>
+                                <div class="text-sm text-slate-400 mb-1">Mã số thuế</div>
+                                <span class="text-white">{{ setting('tax_id') }}</span>
+                            </div>
+                        </li>
+                        @endif
                     </ul>
                 </div>
 

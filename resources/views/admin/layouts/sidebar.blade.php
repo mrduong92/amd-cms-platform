@@ -136,7 +136,7 @@
 
                 <!-- Contact Inquiries -->
                 @php
-                    $newInquiriesCount = \App\Models\ContactInquiry::forSite(adminSiteId())->new()->count();
+                    $newInquiriesCount = \App\Models\ContactInquiry::new()->count();
                 @endphp
                 <li class="nav-item">
                     <a href="{{ route('admin.inquiries.index') }}" class="nav-link {{ request()->routeIs('admin.inquiries.*') ? 'active' : '' }}">

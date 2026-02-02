@@ -73,6 +73,12 @@
                 @endif
 
                 <ul class="space-y-4 text-sm text-slate-400">
+                    @if(setting('company_name'))
+                    <li class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-primary text-sm mt-1">business</span>
+                        <span class="font-medium text-white">{{ setting('company_name') }}</span>
+                    </li>
+                    @endif
                     @if(setting('contact_address'))
                     <li class="flex items-start gap-3">
                         <span class="material-symbols-outlined text-primary text-sm mt-1">location_on</span>
@@ -89,6 +95,12 @@
                     <li class="flex items-center gap-3">
                         <span class="material-symbols-outlined text-primary text-sm">support_agent</span>
                         <a href="tel:{{ setting('contact_hotline') }}" class="hover:text-primary transition-colors">Hotline: {{ setting('contact_hotline') }}</a>
+                    </li>
+                    @endif
+                    @if(setting('tax_id'))
+                    <li class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary text-sm">receipt_long</span>
+                        <span>MST: {{ setting('tax_id') }}</span>
                     </li>
                     @endif
                 </ul>

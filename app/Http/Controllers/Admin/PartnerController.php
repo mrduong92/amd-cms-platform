@@ -11,7 +11,7 @@ class PartnerController extends Controller
 {
     public function index()
     {
-        $partners = Partner::forSite(adminSiteId())->orderBy('order')->paginate(15);
+        $partners = Partner::orderBy('order')->paginate(15);
         return view('admin.partners.index', compact('partners'));
     }
 
@@ -30,8 +30,7 @@ class PartnerController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
-        $validated['site_id'] = adminSiteId();
-        $validated['order'] = Partner::forSite(adminSiteId())->max('order') + 1;
+        $validated['order'] = Partner::max('order') + 1;
 
         // Handle logo from file manager (convert URL to storage path)
         if (!empty($validated['logo'])) {

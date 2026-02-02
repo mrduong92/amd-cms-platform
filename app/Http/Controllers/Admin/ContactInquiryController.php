@@ -10,7 +10,7 @@ class ContactInquiryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ContactInquiry::forSite(adminSiteId());
+        $query = ContactInquiry::query();
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -20,12 +20,13 @@ class ContactInquiryController extends Controller
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
                     ->orWhere('email', 'like', '%' . $request->search . '%')
+                    ->orWhere('phone', 'like', '%' . $request->search . '%')
                     ->orWhere('subject', 'like', '%' . $request->search . '%');
             });
         }
 
         $inquiries = $query->latest()->paginate(15);
-        $newCount = ContactInquiry::forSite(adminSiteId())->new()->count();
+        $newCount = ContactInquiry::new()->count();
 
         return view('admin.inquiries.index', compact('inquiries', 'newCount'));
     }

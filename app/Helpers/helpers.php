@@ -5,7 +5,7 @@ use App\Models\Site;
 
 if (!function_exists('setting')) {
     /**
-     * Get a setting value by key (site-aware)
+     * Get a setting value by key (shared across all sites)
      *
      * @param string $key
      * @param mixed $default
@@ -13,62 +13,29 @@ if (!function_exists('setting')) {
      */
     function setting(string $key, mixed $default = null): mixed
     {
-        $site = app('currentSite');
-        $siteId = $site?->id;
-
-        // Try site-specific setting first
-        if ($siteId) {
-            $setting = Setting::where('key', $key)
-                              ->where('site_id', $siteId)
-                              ->first();
-
-            if ($setting) {
-                return $setting->value;
-            }
-        }
-
-        // Fall back to global setting
-        $setting = Setting::where('key', $key)
-                          ->whereNull('site_id')
-                          ->first();
-
+        $setting = Setting::where('key', $key)->first();
         return $setting?->value ?? $default;
     }
 }
 
 if (!function_exists('settings')) {
     /**
-     * Get all settings for a group (site-aware)
+     * Get all settings for a group
      *
      * @param string $group
      * @return \Illuminate\Support\Collection
      */
     function settings(string $group): \Illuminate\Support\Collection
     {
-        $site = app('currentSite');
-        $siteId = $site?->id;
-
-        // Get global settings first
-        $globalSettings = Setting::where('group', $group)
-                                  ->whereNull('site_id')
-                                  ->pluck('value', 'key');
-
-        // Override with site-specific settings if available
-        if ($siteId) {
-            $siteSettings = Setting::where('group', $group)
-                                    ->where('site_id', $siteId)
-                                    ->pluck('value', 'key');
-
-            return $globalSettings->merge($siteSettings);
-        }
-
-        return $globalSettings;
+        return Setting::where('group', $group)
+                      ->orderBy('order')
+                      ->pluck('value', 'key');
     }
 }
 
 if (!function_exists('currentSite')) {
     /**
-     * Get the current site instance
+     * Get the current site instance (for theme detection)
      *
      * @return Site|null
      */
@@ -78,41 +45,15 @@ if (!function_exists('currentSite')) {
     }
 }
 
-if (!function_exists('isCurrentSite')) {
+if (!function_exists('currentTheme')) {
     /**
-     * Check if a site slug matches the current site
+     * Get the current theme name
      *
-     * @param string $slug
-     * @return bool
+     * @return string
      */
-    function isCurrentSite(string $slug): bool
+    function currentTheme(): string
     {
         $site = app('currentSite');
-        return $site && $site->slug === $slug;
-    }
-}
-
-if (!function_exists('adminSite')) {
-    /**
-     * Get the current admin site instance
-     *
-     * @return Site|null
-     */
-    function adminSite(): ?Site
-    {
-        return app('adminSite');
-    }
-}
-
-if (!function_exists('adminSiteId')) {
-    /**
-     * Get the current admin site ID
-     *
-     * @return int|null
-     */
-    function adminSiteId(): ?int
-    {
-        $site = app('adminSite');
-        return $site?->id;
+        return $site?->theme ?? 'frontend';
     }
 }

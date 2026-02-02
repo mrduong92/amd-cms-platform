@@ -94,9 +94,16 @@
                 @endif
 
                 @if(setting('contact_email'))
-                <div class="flex items-center gap-3 text-slate-400 mb-6">
+                <div class="flex items-center gap-3 text-slate-400 mb-4">
                     <span class="material-symbols-outlined text-primary">email</span>
                     <a href="mailto:{{ setting('contact_email') }}" class="hover:text-white transition-colors">{{ setting('contact_email') }}</a>
+                </div>
+                @endif
+
+                @if(setting('tax_id'))
+                <div class="flex items-center gap-3 text-slate-400 mb-6">
+                    <span class="material-symbols-outlined text-primary">receipt_long</span>
+                    <span>MST: {{ setting('tax_id') }}</span>
                 </div>
                 @endif
 

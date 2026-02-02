@@ -2,17 +2,15 @@
 
 namespace App\Models;
 
-use App\Traits\HasSiteScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
 class Setting extends Model
 {
-    use HasFactory, HasSiteScope;
+    use HasFactory;
 
     protected $fillable = [
-        'site_id',
         'key',
         'value',
         'type',

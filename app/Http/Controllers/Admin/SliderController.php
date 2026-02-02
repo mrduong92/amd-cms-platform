@@ -11,7 +11,7 @@ class SliderController extends Controller
 {
     public function index()
     {
-        $sliders = Slider::forSite(adminSiteId())->orderBy('order')->paginate(15);
+        $sliders = Slider::orderBy('order')->paginate(15);
         return view('admin.sliders.index', compact('sliders'));
     }
 
@@ -33,8 +33,7 @@ class SliderController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
-        $validated['order'] = Slider::forSite(adminSiteId())->max('order') + 1;
-        $validated['site_id'] = adminSiteId();
+        $validated['order'] = Slider::max('order') + 1;
 
         // Handle image from file manager (convert URL to storage path)
         if (!empty($validated['image'])) {

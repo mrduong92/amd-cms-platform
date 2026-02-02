@@ -12,7 +12,7 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Post::with(['category', 'author'])->forSite(adminSiteId());
+        $query = Post::with(['category', 'author']);
 
         if ($request->filled('type')) {
             $query->where('type', $request->type);
@@ -57,7 +57,6 @@ class PostController extends Controller
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active');
         $validated['user_id'] = auth()->id();
-        $validated['site_id'] = adminSiteId();
 
         // Handle image from file manager (convert URL to storage path)
         if (!empty($validated['image'])) {
