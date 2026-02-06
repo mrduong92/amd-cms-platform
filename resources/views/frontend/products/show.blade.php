@@ -163,7 +163,11 @@
 
             <!-- Product Info -->
             <div>
-                <h1 class="font-display text-3xl md:text-4xl font-bold mb-4">{{ $product->name }}</h1>
+                <h1 class="font-display text-3xl md:text-4xl font-bold mb-2">{{ $product->name }}</h1>
+
+                @if($product->sku)
+                <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">SKU: {{ $product->sku }}</p>
+                @endif
 
                 @if($product->category)
                 <a href="{{ route('products.category', $product->category->slug) }}" class="inline-block bg-slate-100 dark:bg-slate-800 text-sm px-4 py-1 rounded-full mb-4 hover:bg-primary hover:text-white transition-colors">
@@ -197,13 +201,6 @@
                 </div>
                 @endif
 
-                <!-- Description -->
-                @if($product->description)
-                <div class="prose dark:prose-invert max-w-none mb-8">
-                    {!! $product->description !!}
-                </div>
-                @endif
-
                 <!-- CTA -->
                 <div class="flex flex-col sm:flex-row gap-4">
                     <a href="{{ route('contact') }}" class="px-8 py-4 bg-primary text-white font-bold rounded-lg hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 text-center">
@@ -217,6 +214,19 @@
                 </div>
             </div>
         </div>
+
+        <!-- Description (full width) -->
+        @if($product->description)
+        <div class="mt-12 border-t border-slate-200 dark:border-slate-700 pt-10">
+            <h2 class="font-display text-2xl font-bold mb-6 flex items-center">
+                <span class="material-symbols-outlined text-primary mr-2">description</span>
+                Mô tả chi tiết
+            </h2>
+            <div class="prose dark:prose-invert max-w-none">
+                {!! $product->description !!}
+            </div>
+        </div>
+        @endif
     </div>
 </section>
 
