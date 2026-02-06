@@ -7,6 +7,10 @@
     <li class="breadcrumb-item active">Sửa</li>
 @endsection
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify@4/dist/tagify.css">
+@endpush
+
 @section('content')
     <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -165,28 +169,14 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="tags-input" class="form-label">Tags</label>
+                            <input type="text" class="form-control" id="tags-input" name="tag_names" value="{{ old('tag_names', $product->tags->pluck('name')->implode(',')) }}" placeholder="Nhập tag và nhấn Enter...">
+                            <small class="text-muted">Nhập tag rồi nhấn Enter. Gợi ý tag có sẵn khi nhập.</small>
+                        </div>
+
+                        <div class="mb-3">
                             <p class="text-muted mb-1">Slug: <code>{{ $product->slug }}</code></p>
                             <p class="text-muted mb-0">Tạo: {{ $product->created_at->format('d/m/Y H:i') }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tags -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Tags</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            @php $selectedTags = old('tags', $product->tags->pluck('id')->toArray()); @endphp
-                            <select class="form-select" id="tags" name="tags[]" multiple size="5">
-                                @foreach($tags as $tag)
-                                    <option value="{{ $tag->id }}" {{ in_array($tag->id, $selectedTags) ? 'selected' : '' }}>
-                                        {{ $tag->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <small class="text-muted">Giữ Ctrl để chọn nhiều tag</small>
                         </div>
                     </div>
                 </div>
@@ -362,6 +352,22 @@
             }
             preview.src = url;
             preview.style.display = 'block';
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@4/dist/tagify.min.js"></script>
+<script>
+    var tagInput = document.getElementById('tags-input');
+    var allTags = @json($tags->pluck('name'));
+    var tagify = new Tagify(tagInput, {
+        whitelist: allTags,
+        dropdown: {
+            maxItems: 20,
+            enabled: 0,
+            closeOnSelect: false
+        },
+        originalInputValueFormat: function(values) {
+            return values.map(function(item) { return item.value; }).join(',');
         }
     });
 </script>

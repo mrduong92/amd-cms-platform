@@ -74,8 +74,7 @@ class ProductController extends Controller
             'gallery' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:tags,id',
+            'tag_names' => 'nullable|string',
         ]);
 
         $validated['is_featured'] = $request->boolean('is_featured');
@@ -123,10 +122,8 @@ class ProductController extends Controller
             }
         }
 
-        // Sync tags
-        if ($request->has('tags')) {
-            $product->tags()->sync($request->tags ?? []);
-        }
+        // Sync tags (find or create by name)
+        $this->syncTagsByName($product, $request->input('tag_names'));
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Sản phẩm đã được tạo thành công.');
@@ -161,8 +158,7 @@ class ProductController extends Controller
             'gallery' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:tags,id',
+            'tag_names' => 'nullable|string',
         ]);
 
         $validated['is_featured'] = $request->boolean('is_featured');
@@ -218,8 +214,8 @@ class ProductController extends Controller
             }
         }
 
-        // Sync tags
-        $product->tags()->sync($request->tags ?? []);
+        // Sync tags (find or create by name)
+        $this->syncTagsByName($product, $request->input('tag_names'));
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Sản phẩm đã được cập nhật.');
@@ -336,5 +332,31 @@ class ProductController extends Controller
         }
 
         return ltrim($path, '/');
+    }
+
+    /**
+     * Sync tags by comma-separated names (find or create)
+     */
+    private function syncTagsByName(Product $product, ?string $tagNames): void
+    {
+        if (empty($tagNames)) {
+            $product->tags()->detach();
+            return;
+        }
+
+        $names = array_filter(array_map('trim', explode(',', $tagNames)));
+        $tagIds = [];
+
+        foreach ($names as $name) {
+            if ($name !== '') {
+                $tag = Tag::firstOrCreate(
+                    ['name' => $name],
+                    ['slug' => \Illuminate\Support\Str::slug($name)]
+                );
+                $tagIds[] = $tag->id;
+            }
+        }
+
+        $product->tags()->sync($tagIds);
     }
 }
