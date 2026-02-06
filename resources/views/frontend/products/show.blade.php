@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', $product->name)
-@section('meta_description', $product->short_description ?? Str::limit(strip_tags($product->description), 160))
+@section('title', $product->meta_title ?: $product->name)
+@section('meta_description', $product->meta_description ?: ($product->short_description ?? Str::limit(strip_tags($product->description), 160)))
 
 @section('content')
 <!-- Breadcrumb -->
@@ -166,9 +166,17 @@
                 <h1 class="font-display text-3xl md:text-4xl font-bold mb-4">{{ $product->name }}</h1>
 
                 @if($product->category)
-                <a href="{{ route('products.category', $product->category->slug) }}" class="inline-block bg-slate-100 dark:bg-slate-800 text-sm px-4 py-1 rounded-full mb-6 hover:bg-primary hover:text-white transition-colors">
+                <a href="{{ route('products.category', $product->category->slug) }}" class="inline-block bg-slate-100 dark:bg-slate-800 text-sm px-4 py-1 rounded-full mb-4 hover:bg-primary hover:text-white transition-colors">
                     {{ $product->category->name }}
                 </a>
+                @endif
+
+                @if($product->tags->count() > 0)
+                <div class="flex flex-wrap gap-2 mb-6">
+                    @foreach($product->tags as $tag)
+                    <span class="inline-block bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">{{ $tag->name }}</span>
+                    @endforeach
+                </div>
                 @endif
 
                 <!-- Specs -->

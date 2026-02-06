@@ -46,6 +46,14 @@
                     </a>
                 </li>
 
+                <!-- Tags -->
+                <li class="nav-item">
+                    <a href="{{ route('admin.tags.index') }}" class="nav-link {{ request()->routeIs('admin.tags.*') ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-tags"></i>
+                        <p>Tags</p>
+                    </a>
+                </li>
+
                 <!-- Services -->
                 <li class="nav-item">
                     <a href="{{ route('admin.services.index') }}" class="nav-link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}">

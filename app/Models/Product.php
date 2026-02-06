@@ -15,6 +15,7 @@ class Product extends Model
         'category_id',
         'name',
         'slug',
+        'sku',
         'short_description',
         'description',
         'image',
@@ -22,8 +23,11 @@ class Product extends Model
         'price',
         'sale_price',
         'is_featured',
+        'featured_order',
         'order',
         'is_active',
+        'meta_title',
+        'meta_description',
     ];
 
     protected $casts = [
@@ -99,6 +103,22 @@ class Product extends Model
     public function primaryImage()
     {
         return $this->hasOne(ProductImage::class)->where('is_primary', true);
+    }
+
+    /**
+     * Scope for featured products ordered by featured_order
+     */
+    public function scopeFeaturedOrdered($query)
+    {
+        return $query->where('is_featured', true)->orderBy('featured_order');
+    }
+
+    /**
+     * Get tags for this product
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
     }
 
     /**

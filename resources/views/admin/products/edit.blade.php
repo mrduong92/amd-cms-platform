@@ -45,6 +45,29 @@
                     </div>
                 </div>
 
+                <!-- SEO -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">SEO</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="meta_title" class="form-label">Meta Title</label>
+                            <input type="text" class="form-control @error('meta_title') is-invalid @enderror" id="meta_title" name="meta_title" value="{{ old('meta_title', $product->meta_title) }}" placeholder="Để trống sẽ dùng tên sản phẩm">
+                            @error('meta_title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="meta_description" class="form-label">Meta Description</label>
+                            <textarea class="form-control @error('meta_description') is-invalid @enderror" id="meta_description" name="meta_description" rows="2" placeholder="Để trống sẽ dùng mô tả ngắn">{{ old('meta_description', $product->meta_description) }}</textarea>
+                            @error('meta_description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Specifications -->
                 <div class="card">
                     <div class="card-header">
@@ -112,6 +135,14 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="sku" class="form-label">Mã sản phẩm (SKU)</label>
+                            <input type="text" class="form-control @error('sku') is-invalid @enderror" id="sku" name="sku" value="{{ old('sku', $product->sku) }}" placeholder="vd: SP001">
+                            @error('sku')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
                             <label for="badge" class="form-label">Badge</label>
                             <input type="text" class="form-control @error('badge') is-invalid @enderror" id="badge" name="badge" value="{{ old('badge', $product->badge) }}" placeholder="vd: Bán chạy, Giảm giá">
                             @error('badge')
@@ -136,6 +167,26 @@
                         <div class="mb-3">
                             <p class="text-muted mb-1">Slug: <code>{{ $product->slug }}</code></p>
                             <p class="text-muted mb-0">Tạo: {{ $product->created_at->format('d/m/Y H:i') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tags</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            @php $selectedTags = old('tags', $product->tags->pluck('id')->toArray()); @endphp
+                            <select class="form-select" id="tags" name="tags[]" multiple size="5">
+                                @foreach($tags as $tag)
+                                    <option value="{{ $tag->id }}" {{ in_array($tag->id, $selectedTags) ? 'selected' : '' }}>
+                                        {{ $tag->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">Giữ Ctrl để chọn nhiều tag</small>
                         </div>
                     </div>
                 </div>

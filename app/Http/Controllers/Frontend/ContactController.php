@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NewContactInquiry;
 use App\Models\ContactInquiry;
 use App\Models\NewsletterSubscriber;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {
@@ -50,12 +52,22 @@ class ContactController extends Controller
             }
         }
 
-        ContactInquiry::create([
+        $inquiry = ContactInquiry::create([
             'phone' => $validated['phone'],
             'message' => $validated['message'],
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
+
+        // Send email notification
+        try {
+            $adminEmail = Setting::get('notification_email') ?: Setting::get('contact_email');
+            if ($adminEmail) {
+                Mail::to($adminEmail)->send(new NewContactInquiry($inquiry));
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to send contact notification: ' . $e->getMessage());
+        }
 
         return back()->with('success', 'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.');
     }

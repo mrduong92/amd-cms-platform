@@ -53,7 +53,7 @@ class HomeController extends Controller
             ->get();
 
         // Get featured products (for "All" tab or if no categories)
-        $featuredProducts = Product::with('specs')->active()->featured()->ordered()->limit(8)->get();
+        $featuredProducts = Product::with('specs')->active()->featured()->orderBy('featured_order')->limit(8)->get();
 
         // If no featured products, get latest products
         if ($featuredProducts->isEmpty()) {

@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Imports\ProductImport;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductSpec;
+use App\Models\Tag;
+use App\Exports\ProductImportTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -28,16 +32,26 @@ class ProductController extends Controller
             $query->where('is_active', $request->is_active);
         }
 
-        $products = $query->orderBy('order')->paginate(15);
+        $isFeaturedFilter = $request->boolean('is_featured');
+
+        if ($request->filled('is_featured') && $isFeaturedFilter) {
+            $query->where('is_featured', true);
+            $query->orderBy('featured_order');
+        } else {
+            $query->orderBy('order');
+        }
+
+        $products = $query->paginate(15)->withQueryString();
         $categories = Category::with('products')->orderBy('name')->get();
 
-        return view('admin.products.index', compact('products', 'categories'));
+        return view('admin.products.index', compact('products', 'categories', 'isFeaturedFilter'));
     }
 
     public function create()
     {
         $categories = Category::with('products')->orderBy('name')->get();
-        return view('admin.products.create', compact('categories'));
+        $tags = Tag::orderBy('name')->get();
+        return view('admin.products.create', compact('categories', 'tags'));
     }
 
     public function store(Request $request)
@@ -45,6 +59,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
+            'sku' => 'nullable|string|max:100',
             'short_description' => 'nullable|string',
             'description' => 'nullable|string',
             'badge' => 'nullable|string|max:50',
@@ -57,11 +72,19 @@ class ProductController extends Controller
             'specs.*.name' => 'nullable|string|max:100',
             'specs.*.value' => 'nullable|string|max:255',
             'gallery' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
         ]);
 
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active');
         $validated['order'] = Product::max('order') + 1;
+
+        if ($validated['is_featured']) {
+            $validated['featured_order'] = Product::where('is_featured', true)->max('featured_order') + 1;
+        }
 
         // Handle main image from file manager (convert URL to storage path)
         if (!empty($validated['image'])) {
@@ -100,16 +123,22 @@ class ProductController extends Controller
             }
         }
 
+        // Sync tags
+        if ($request->has('tags')) {
+            $product->tags()->sync($request->tags ?? []);
+        }
+
         return redirect()->route('admin.products.index')
             ->with('success', 'Sản phẩm đã được tạo thành công.');
     }
 
     public function edit(Product $product)
     {
-        $product->load(['specs', 'images']);
+        $product->load(['specs', 'images', 'tags']);
         $categories = Category::with('products')->orderBy('name')->get();
+        $tags = Tag::orderBy('name')->get();
 
-        return view('admin.products.edit', compact('product', 'categories'));
+        return view('admin.products.edit', compact('product', 'categories', 'tags'));
     }
 
     public function update(Request $request, Product $product)
@@ -117,6 +146,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
+            'sku' => 'nullable|string|max:100',
             'short_description' => 'nullable|string',
             'description' => 'nullable|string',
             'badge' => 'nullable|string|max:50',
@@ -129,10 +159,19 @@ class ProductController extends Controller
             'specs.*.name' => 'nullable|string|max:100',
             'specs.*.value' => 'nullable|string|max:255',
             'gallery' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
         ]);
 
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active');
+
+        // If product is now featured and wasn't before, assign featured_order
+        if ($validated['is_featured'] && !$product->is_featured) {
+            $validated['featured_order'] = Product::where('is_featured', true)->max('featured_order') + 1;
+        }
 
         // Handle main image from file manager
         if (!empty($validated['image'])) {
@@ -178,6 +217,9 @@ class ProductController extends Controller
                 }
             }
         }
+
+        // Sync tags
+        $product->tags()->sync($request->tags ?? []);
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Sản phẩm đã được cập nhật.');
@@ -225,6 +267,48 @@ class ProductController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    public function reorderFeatured(Request $request)
+    {
+        $request->validate([
+            'items' => 'required|array',
+            'items.*' => 'exists:products,id',
+        ]);
+
+        foreach ($request->items as $order => $id) {
+            Product::where('id', $id)->update(['featured_order' => $order]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function importForm()
+    {
+        return view('admin.products.import');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        try {
+            $import = new ProductImport();
+            Excel::import($import, $request->file('file'));
+
+            $count = $import->getRowCount();
+            return redirect()->route('admin.products.index')
+                ->with('success', "Đã import thành công {$count} sản phẩm.");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Lỗi import: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new ProductImportTemplate(), 'mau-import-san-pham.xlsx');
     }
 
     /**

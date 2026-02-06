@@ -93,9 +93,18 @@ class SettingSeeder extends Seeder
                 'value' => '123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh',
                 'type' => 'textarea',
                 'group' => 'contact',
-                'label' => 'Địa chỉ',
-                'description' => 'Địa chỉ công ty',
+                'label' => 'Địa chỉ văn phòng',
+                'description' => 'Địa chỉ văn phòng công ty',
                 'order' => 4,
+            ],
+            [
+                'key' => 'contact_warehouse_address',
+                'value' => '',
+                'type' => 'textarea',
+                'group' => 'contact',
+                'label' => 'Địa chỉ kho hàng',
+                'description' => 'Địa chỉ kho hàng của công ty',
+                'order' => 5,
             ],
             [
                 'key' => 'contact_map_embed',
@@ -113,7 +122,16 @@ class SettingSeeder extends Seeder
                 'group' => 'contact',
                 'label' => 'Giờ làm việc',
                 'description' => 'Thời gian làm việc',
-                'order' => 6,
+                'order' => 7,
+            ],
+            [
+                'key' => 'notification_email',
+                'value' => '',
+                'type' => 'email',
+                'group' => 'contact',
+                'label' => 'Email nhận thông báo',
+                'description' => 'Email nhận thông báo khi có liên hệ mới. Để trống sẽ dùng email liên hệ.',
+                'order' => 10,
             ],
 
             // Social Media Settings

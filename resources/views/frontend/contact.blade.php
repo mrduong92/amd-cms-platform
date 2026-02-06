@@ -79,8 +79,20 @@
                             <span class="material-symbols-outlined text-primary">location_on</span>
                         </div>
                         <div>
-                            <h4 class="font-bold mb-1">Địa chỉ</h4>
+                            <h4 class="font-bold mb-1">Địa chỉ văn phòng</h4>
                             <p class="text-slate-600 dark:text-slate-400">{{ setting('contact_address') }}</p>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if(setting('contact_warehouse_address'))
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-primary">warehouse</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-1">Địa chỉ kho hàng</h4>
+                            <p class="text-slate-600 dark:text-slate-400">{{ setting('contact_warehouse_address') }}</p>
                         </div>
                     </div>
                     @endif

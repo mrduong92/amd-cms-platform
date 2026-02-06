@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\UserController;
@@ -26,10 +27,17 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::post('categories/reorder', [CategoryController::class, 'reorder'])->name('categories.reorder');
 
     // Products
+    Route::get('products/import', [ProductController::class, 'importForm'])->name('products.import');
+    Route::post('products/import', [ProductController::class, 'importExcel'])->name('products.import.execute');
+    Route::get('products/import-template', [ProductController::class, 'downloadTemplate'])->name('products.import.template');
     Route::resource('products', ProductController::class);
     Route::post('products/reorder', [ProductController::class, 'reorder'])->name('products.reorder');
+    Route::post('products/reorder-featured', [ProductController::class, 'reorderFeatured'])->name('products.reorder-featured');
     Route::delete('products/{product}/specs/{spec}', [ProductController::class, 'deleteSpec'])->name('products.specs.delete');
     Route::delete('products/{product}/images/{image}', [ProductController::class, 'deleteImage'])->name('products.images.delete');
+
+    // Tags
+    Route::resource('tags', TagController::class);
 
     // Services
     Route::resource('services', ServiceController::class);

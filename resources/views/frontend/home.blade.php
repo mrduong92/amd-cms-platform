@@ -6,19 +6,21 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <style>
     .hero-swiper {
-        height: 75vh;
-        min-height: 480px;
-        max-height: 700px;
+        aspect-ratio: 1066/393;
+        max-height: 500px;
     }
     @media (max-width: 1024px) {
         .hero-swiper {
-            height: 60vh;
+            aspect-ratio: 1066/450;
+            max-height: 400px;
         }
     }
     @media (max-width: 768px) {
         .hero-swiper {
+            aspect-ratio: auto;
             height: 50vh;
-            min-height: 400px;
+            min-height: 320px;
+            max-height: 400px;
         }
     }
     .hero-swiper .swiper-slide {
@@ -75,19 +77,19 @@
                             @if($slider->subtitle)
                             <span class="inline-block py-1 px-3 rounded-full bg-primary/20 text-primary text-xs font-bold tracking-widest uppercase mb-6">{{ $slider->subtitle }}</span>
                             @endif
-                            <h1 class="font-display text-5xl md:text-7xl font-extrabold text-white leading-tight mb-8">
+                            <h1 class="font-display text-3xl md:text-5xl font-extrabold text-white leading-tight mb-6">
                                 {!! nl2br(e($slider->title)) !!}
                             </h1>
                             @if($slider->description)
-                            <p class="text-lg text-slate-300 mb-10 leading-relaxed">{{ $slider->description }}</p>
+                            <p class="text-base text-slate-300 mb-8 leading-relaxed">{{ $slider->description }}</p>
                             @endif
                             <div class="flex flex-col sm:flex-row gap-4">
                                 @if($slider->button_text && $slider->button_url)
-                                <a href="{{ $slider->button_url }}" class="px-8 py-4 bg-primary text-white font-bold rounded-lg hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 text-center">{{ $slider->button_text }}</a>
+                                <a href="{{ $slider->button_url }}" class="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 text-center">{{ $slider->button_text }}</a>
                                 @else
-                                <a href="{{ route('products.index') }}" class="px-8 py-4 bg-primary text-white font-bold rounded-lg hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 text-center">Khám phá sản phẩm</a>
+                                <a href="{{ route('products.index') }}" class="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 text-center">Khám phá sản phẩm</a>
                                 @endif
-                                <a href="{{ route('posts.projects') }}" class="px-8 py-4 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-lg hover:bg-white/20 transition-all text-center">Xem dự án của chúng tôi</a>
+                                <a href="{{ route('posts.projects') }}" class="px-6 py-3 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-lg hover:bg-white/20 transition-all text-center">Xem dự án của chúng tôi</a>
                             </div>
                         </div>
                     </div>
@@ -104,15 +106,15 @@
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                         <div class="max-w-2xl">
                             <span class="inline-block py-1 px-3 rounded-full bg-primary/20 text-primary text-xs font-bold tracking-widest uppercase mb-6">{{ setting('site_name', 'NMT AUTO') }}</span>
-                            <h1 class="font-display text-5xl md:text-7xl font-extrabold text-white leading-tight mb-8">
+                            <h1 class="font-display text-3xl md:text-5xl font-extrabold text-white leading-tight mb-6">
                                 Giải pháp <br/><span class="text-primary">công nghiệp</span> toàn diện
                             </h1>
-                            <p class="text-lg text-slate-300 mb-10 leading-relaxed">
+                            <p class="text-base text-slate-300 mb-8 leading-relaxed">
                                 {{ setting('site_description', 'Cung cấp các giải pháp pin Lithium, camera AI, hệ thống lưu trữ năng lượng và dịch vụ xe nâng chuyên nghiệp.') }}
                             </p>
                             <div class="flex flex-col sm:flex-row gap-4">
-                                <a href="{{ route('products.index') }}" class="px-8 py-4 bg-primary text-white font-bold rounded-lg hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 text-center">Khám phá sản phẩm</a>
-                                <a href="{{ route('contact') }}" class="px-8 py-4 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-lg hover:bg-white/20 transition-all text-center">Liên hệ tư vấn</a>
+                                <a href="{{ route('products.index') }}" class="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 text-center">Khám phá sản phẩm</a>
+                                <a href="{{ route('contact') }}" class="px-6 py-3 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-lg hover:bg-white/20 transition-all text-center">Liên hệ tư vấn</a>
                             </div>
                         </div>
                     </div>
@@ -460,11 +462,11 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h3 class="text-center text-slate-400 font-bold uppercase tracking-widest text-xs mb-10">{{ setting('home_partners_title', 'Đối tác tin cậy của chúng tôi') }}</h3>
         @if($partners->count() > 0)
-        <div class="flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-70 hover:opacity-100 transition-opacity duration-500">
+        <div class="flex flex-wrap justify-center items-center gap-12 md:gap-20">
             @foreach($partners as $partner)
             <a href="{{ $partner->url ?? '#' }}" target="{{ $partner->url ? '_blank' : '_self' }}" class="flex flex-col items-center gap-2 hover:opacity-100 transition-opacity">
                 @if($partner->logo)
-                <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->name }}" class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all">
+                <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->name }}" class="h-16 w-auto object-contain transition-all">
                 @else
                 <div class="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center">
                     <span class="material-symbols-outlined text-3xl text-slate-400">business</span>
