@@ -183,10 +183,10 @@ class SettingSeeder extends Seeder
             [
                 'key' => 'social_messenger',
                 'value' => '',
-                'type' => 'url',
+                'type' => 'text',
                 'group' => 'social',
-                'label' => 'Facebook Messenger',
-                'description' => 'Link chat Messenger (vd: https://m.me/nmtauto)',
+                'label' => 'Facebook Page ID (Messenger Chat)',
+                'description' => 'Nhập Page ID của Fanpage để hiển thị chat Messenger trực tiếp trên website (vd: 123456789012345). Để trống để ẩn.',
                 'order' => 6,
             ],
             [
