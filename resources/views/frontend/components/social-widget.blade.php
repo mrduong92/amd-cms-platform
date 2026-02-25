@@ -1,4 +1,4 @@
-{{-- Floating CTA Buttons (Call + Zalo) --}}
+{{-- Floating CTA Buttons (Call + Zalo + Messenger) --}}
 <div class="fixed z-50 flex gap-3 bottom-8 right-8 max-lg:bottom-5 max-lg:right-4">
     {{-- Call Button --}}
     @if(setting('contact_phone') || setting('contact_hotline'))
@@ -11,6 +11,21 @@
         </div>
         <div class="hidden lg:block absolute right-16 top-1/2 -translate-y-1/2 bg-slate-800 text-white text-sm font-medium px-4 py-2 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
             {{ setting('contact_hotline') ?: setting('contact_phone') }}
+            <div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 w-2 h-2 bg-slate-800 rotate-45"></div>
+        </div>
+    </a>
+    @endif
+
+    {{-- Messenger Button --}}
+    @if(setting('social_messenger'))
+    <a href="{{ setting('social_messenger') }}" target="_blank" class="group relative" title="Chat Facebook Messenger">
+        <div class="relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all duration-300" style="background: linear-gradient(135deg, #00B2FF 0%, #006AFF 60%, #7B2FFF 100%);">
+            <svg class="w-7 h-7" fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.477 2 2 6.145 2 11.243c0 2.906 1.452 5.5 3.733 7.222V21.5l3.405-1.869c.91.252 1.872.386 2.862.386 5.523 0 10-4.145 10-9.243S17.523 2 12 2zm1.043 12.449L10.696 11.8l-4.574 2.65 5.03-5.336 2.348 2.648 4.573-2.648-5.03 5.335z"/>
+            </svg>
+        </div>
+        <div class="hidden lg:block absolute right-16 top-1/2 -translate-y-1/2 bg-slate-800 text-white text-sm font-medium px-4 py-2 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+            Chat Messenger
             <div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 w-2 h-2 bg-slate-800 rotate-45"></div>
         </div>
     </a>
