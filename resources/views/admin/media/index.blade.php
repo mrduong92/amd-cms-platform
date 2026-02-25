@@ -57,7 +57,7 @@
                     <span class="visually-hidden">Đang tải...</span>
                 </div>
             </div>
-            <iframe src="/filemanager?type=file" id="filemanager-iframe" onload="hideLoading()"></iframe>
+            <iframe src="/filemanager?type=image" id="filemanager-iframe" onload="hideLoading()"></iframe>
         </div>
     </div>
 </div>
@@ -101,7 +101,7 @@
     }
 
     function openStandaloneFileManager() {
-        standaloneWindow = window.open('/filemanager?type=file', 'FileManager', 'width=1000,height=700');
+        standaloneWindow = window.open('/filemanager?type=image', 'FileManager', 'width=1000,height=700');
 
         // Check periodically if the window is closed, then refresh the iframe
         const checkWindowClosed = setInterval(function() {
