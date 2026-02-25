@@ -36,3 +36,165 @@
     </a>
     @endif
 </div>
+
+{{-- Messenger Popup Widget (Facebook Page Plugin – messages tab) --}}
+@if(setting('social_messenger') && setting('social_facebook'))
+@php
+    $fbPageUrl  = rtrim(setting('social_facebook'), '/');
+    // Normalise to https://www.facebook.com/... (required by the plugin)
+    $fbPageUrl  = preg_replace('#^https?://(www\.)?facebook\.com/#', 'https://www.facebook.com/', $fbPageUrl);
+    $pluginSrc  = 'https://www.facebook.com/plugins/page.php?'
+                . http_build_query([
+                    'href'                  => $fbPageUrl,
+                    'tabs'                  => 'messages',
+                    'width'                 => '340',
+                    'height'                => '460',
+                    'small_header'          => 'true',
+                    'adapt_container_width' => 'false',
+                    'hide_cover'            => 'true',
+                    'show_facepile'         => 'false',
+                ]);
+    $siteName = setting('site_name', 'NMT AUTO');
+@endphp
+
+<style>
+    /* ── trigger button ───────────────────────────────────────── */
+    #msng-btn {
+        position: fixed; bottom: 2rem; left: 2rem; z-index: 50;
+        width: 56px; height: 56px; border-radius: 9999px;
+        border: none; padding: 0; cursor: pointer;
+        background: linear-gradient(135deg,#00B2FF 0%,#006AFF 60%,#7B2FFF 100%);
+        box-shadow: 0 4px 15px rgba(0,106,255,.45);
+        display: flex; align-items: center; justify-content: center;
+        transition: transform .2s, box-shadow .2s;
+    }
+    #msng-btn:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,106,255,.55); }
+    #msng-btn .msng-ping {
+        position: absolute; inset: 0; border-radius: 9999px;
+        background: rgba(0,106,255,.4);
+        animation: msng-ping 1.8s cubic-bezier(0,0,.2,1) infinite;
+    }
+    @keyframes msng-ping { 75%,100%{ transform:scale(1.8); opacity:0; } }
+
+    /* ── panel ────────────────────────────────────────────────── */
+    #msng-panel {
+        position: fixed; bottom: 6.5rem; left: 2rem; z-index: 50;
+        width: 360px;
+        border-radius: 16px;
+        box-shadow: 0 8px 40px rgba(0,0,0,.22);
+        overflow: hidden;
+        transform: scale(.9) translateY(12px);
+        transform-origin: bottom left;
+        opacity: 0; pointer-events: none;
+        transition: transform .22s cubic-bezier(.34,1.56,.64,1), opacity .18s ease;
+        background: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
+    #msng-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: auto; }
+
+    /* ── header ───────────────────────────────────────────────── */
+    .msng-head {
+        background: linear-gradient(135deg,#006AFF 0%,#7B2FFF 100%);
+        color: #fff; padding: 13px 16px;
+        display: flex; align-items: center; gap: 10px; position: relative;
+    }
+    .msng-head-avatar {
+        width: 38px; height: 38px; border-radius: 9999px;
+        background: rgba(255,255,255,.25);
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .msng-head-name  { font-weight: 700; font-size: .88rem; line-height: 1.2; }
+    .msng-head-sub   { font-size: .7rem; opacity: .82; display: flex; align-items: center; gap: 4px; }
+    .msng-head-sub::before { content:''; width:6px; height:6px; background:#69ff85; border-radius:50%; display:inline-block; }
+    .msng-close {
+        position: absolute; top: 9px; right: 11px;
+        background: none; border: none; color: #fff; opacity: .75;
+        font-size: 1rem; cursor: pointer; line-height: 1; padding: 3px 5px; border-radius: 4px;
+    }
+    .msng-close:hover { opacity: 1; background: rgba(255,255,255,.15); }
+
+    /* ── plugin iframe wrapper ────────────────────────────────── */
+    .msng-plugin {
+        display: block; width: 100%; height: 460px;
+        border: none; overflow: hidden; background: #fff;
+    }
+
+    /* ── responsive ───────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+        #msng-btn   { bottom: 1.25rem; left: 1rem; }
+        #msng-panel { bottom: 5.5rem;  left: 1rem;
+                      width: calc(100vw - 2rem); max-width: 360px; }
+    }
+</style>
+
+{{-- Trigger button --}}
+<button id="msng-btn" aria-label="Chat Messenger" onclick="msngToggle()">
+    <span class="msng-ping"></span>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.477 2 2 6.145 2 11.243c0 2.906 1.452 5.5 3.733 7.222V21.5l3.405-1.869c.91.252 1.872.386 2.862.386 5.523 0 10-4.145 10-9.243S17.523 2 12 2zm1.043 12.449L10.696 11.8l-4.574 2.65 5.03-5.336 2.348 2.648 4.573-2.648-5.03 5.335z"/>
+    </svg>
+</button>
+
+{{-- Panel --}}
+<div id="msng-panel" role="dialog" aria-label="Chat Facebook Messenger">
+    <div class="msng-head">
+        <div class="msng-head-avatar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                <path d="M12 2C6.477 2 2 6.145 2 11.243c0 2.906 1.452 5.5 3.733 7.222V21.5l3.405-1.869c.91.252 1.872.386 2.862.386 5.523 0 10-4.145 10-9.243S17.523 2 12 2zm1.043 12.449L10.696 11.8l-4.574 2.65 5.03-5.336 2.348 2.648 4.573-2.648-5.03 5.335z"/>
+            </svg>
+        </div>
+        <div>
+            <div class="msng-head-name">{{ $siteName }}</div>
+            <div class="msng-head-sub">Thường trả lời trong vài phút</div>
+        </div>
+        <button class="msng-close" onclick="msngToggle()" aria-label="Đóng">✕</button>
+    </div>
+
+    {{-- Facebook Page Plugin – messages tab, lazy-loaded on first open --}}
+    <div id="msng-plugin-wrap" style="height:460px; background:#f0f2f5; display:flex; align-items:center; justify-content:center;">
+        <div style="text-align:center; color:#90949c; font-size:.8rem;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="#c4c8cc" style="display:block;margin:0 auto 8px"><path d="M12 2C6.477 2 2 6.145 2 11.243c0 2.906 1.452 5.5 3.733 7.222V21.5l3.405-1.869c.91.252 1.872.386 2.862.386 5.523 0 10-4.145 10-9.243S17.523 2 12 2zm1.043 12.449L10.696 11.8l-4.574 2.65 5.03-5.336 2.348 2.648 4.573-2.648-5.03 5.335z"/></svg>
+            Đang tải...
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    var panel     = document.getElementById('msng-panel');
+    var pluginSrc = {{ Js::from($pluginSrc) }};
+    var loaded    = false;
+    var isOpen    = false;
+
+    window.msngToggle = function () {
+        isOpen = !isOpen;
+        panel.classList.toggle('open', isOpen);
+
+        // Lazy-load the iframe on first open
+        if (isOpen && !loaded) {
+            loaded = true;
+            var wrap = document.getElementById('msng-plugin-wrap');
+            var iframe = document.createElement('iframe');
+            iframe.src = pluginSrc;
+            iframe.className = 'msng-plugin';
+            iframe.scrolling = 'no';
+            iframe.frameBorder = '0';
+            iframe.allow = 'autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share';
+            iframe.allowFullscreen = true;
+            wrap.innerHTML = '';
+            wrap.style.cssText = '';
+            wrap.appendChild(iframe);
+        }
+    };
+
+    // Close on outside click
+    document.addEventListener('click', function (e) {
+        if (!isOpen) return;
+        if (!panel.contains(e.target) && !e.target.closest('#msng-btn')) {
+            isOpen = false;
+            panel.classList.remove('open');
+        }
+    });
+})();
+</script>
+@endif
