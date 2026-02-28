@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Imports\ProductImport;
+use App\Exports\ProductImportTemplate;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductSpec;
 use App\Models\Tag;
-use App\Exports\ProductImportTemplate;
+use App\Services\XlsxImporter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -287,16 +287,24 @@ class ProductController extends Controller
     public function importExcel(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
+            'file' => 'required|mimes:xlsx,xls|max:10240',
         ]);
 
         try {
-            $import = new ProductImport();
-            Excel::import($import, $request->file('file'));
+            $result = (new XlsxImporter())->import(
+                $request->file('file')->getRealPath()
+            );
 
-            $count = $import->getRowCount();
-            return redirect()->route('admin.products.index')
-                ->with('success', "Đã import thành công {$count} sản phẩm.");
+            $msg = "Import thành công {$result['imported']} sản phẩm";
+            if ($result['newCats'] > 0) {
+                $msg .= ", tạo mới {$result['newCats']} danh mục";
+            }
+            $msg .= '.';
+            if ($result['skipped'] > 0) {
+                $msg .= " Bỏ qua {$result['skipped']} sản phẩm trùng SKU.";
+            }
+
+            return redirect()->route('admin.products.index')->with('success', $msg);
         } catch (\Exception $e) {
             return back()->with('error', 'Lỗi import: ' . $e->getMessage());
         }

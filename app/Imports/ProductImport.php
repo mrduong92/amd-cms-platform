@@ -2,35 +2,33 @@
 
 namespace App\Imports;
 
-use App\Models\Product;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class ProductImport implements ToModel, WithHeadingRow
+class ProductImport implements WithMultipleSheets
 {
-    private int $rowCount = 0;
+    private array $sheetNames;
+    private int $importedCount = 0;
+    private int $skippedCount  = 0;
 
-    public function model(array $row)
+    public function __construct(array $sheetNames)
     {
-        $name = $row['ten_san_pham'] ?? null;
+        $this->sheetNames = $sheetNames;
+    }
 
-        if (empty($name)) {
-            return null;
+    /**
+     * Return one SheetImport per sheet, keyed by 0-based index.
+     */
+    public function sheets(): array
+    {
+        $sheets = [];
+        foreach ($this->sheetNames as $index => $name) {
+            $sheets[$index] = new ProductSheetImport($name, $this);
         }
-
-        $this->rowCount++;
-
-        return new Product([
-            'name' => $name,
-            'sku' => $row['ma_san_pham'] ?? null,
-            'is_active' => true,
-            'is_featured' => false,
-            'order' => Product::max('order') + $this->rowCount,
-        ]);
+        return $sheets;
     }
 
-    public function getRowCount(): int
-    {
-        return $this->rowCount;
-    }
+    public function incrementCount(): void  { $this->importedCount++; }
+    public function incrementSkipped(): void { $this->skippedCount++; }
+    public function getImportedCount(): int  { return $this->importedCount; }
+    public function getSkippedCount(): int   { return $this->skippedCount; }
 }
