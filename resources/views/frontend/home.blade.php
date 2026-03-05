@@ -132,75 +132,6 @@
     </div>
 </section>
 
-<!-- About/Core Values Section -->
-<section class="py-24 bg-slate-50 dark:bg-slate-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col lg:flex-row items-center gap-16">
-            <div class="lg:w-1/2">
-                @if($aboutPage && $aboutPage->image)
-                <img alt="{{ $aboutPage->title ?? 'Về chúng tôi' }}" class="rounded-2xl shadow-2xl w-full" src="{{ asset('storage/' . $aboutPage->image) }}"/>
-                @elseif(setting('about_image'))
-                <img alt="Về chúng tôi" class="rounded-2xl shadow-2xl w-full" src="{{ asset('storage/' . setting('about_image')) }}"/>
-                @else
-                <img alt="Đội ngũ kỹ thuật" class="rounded-2xl shadow-2xl w-full" src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800"/>
-                @endif
-            </div>
-            <div class="lg:w-1/2">
-                <span class="text-primary font-bold uppercase tracking-widest text-sm mb-4 block">{{ setting('about_subtitle', 'Giá trị cốt lõi') }}</span>
-                <h2 class="font-display text-4xl font-extrabold mb-8 leading-tight">
-                    @if($aboutPage)
-                        {{ $aboutPage->title }}
-                    @else
-                        {{ setting('about_title', 'Thiết lập tiêu chuẩn vàng trong Dịch vụ Công nghiệp') }}
-                    @endif
-                </h2>
-
-                @if($aboutPage && $aboutPage->content)
-                <div class="prose dark:prose-invert max-w-none prose-h4:mt-0 prose-h4:mb-1">
-                    {!! $aboutPage->content !!}
-                </div>
-                @else
-                <div class="space-y-8">
-                    <div class="flex gap-6">
-                        <div class="shrink-0 w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-md">
-                            <span class="material-symbols-outlined text-primary">{{ setting('value1_icon', 'verified') }}</span>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-xl mb-1">{{ setting('value1_title', 'Chuyên môn kỹ thuật vượt trội') }}</h4>
-                            <p class="text-slate-600 dark:text-slate-400">{{ setting('value1_description', 'Các kỹ sư của chúng tôi được đào tạo chính quy với nhiều năm kinh nghiệm trong hệ thống năng lượng.') }}</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-6">
-                        <div class="shrink-0 w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-md">
-                            <span class="material-symbols-outlined text-primary">{{ setting('value2_icon', 'support_agent') }}</span>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-xl mb-1">{{ setting('value2_title', 'Hỗ trợ 24/7') }}</h4>
-                            <p class="text-slate-600 dark:text-slate-400">{{ setting('value2_description', 'Hạ tầng quan trọng không bao giờ nghỉ. Chúng tôi cũng vậy. Hỗ trợ luôn sẵn sàng khi bạn cần.') }}</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-6">
-                        <div class="shrink-0 w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-md">
-                            <span class="material-symbols-outlined text-primary">{{ setting('value3_icon', 'high_quality') }}</span>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-xl mb-1">{{ setting('value3_title', 'Đảm bảo chất lượng cao cấp') }}</h4>
-                            <p class="text-slate-600 dark:text-slate-400">{{ setting('value3_description', 'Mọi linh kiện và dịch vụ đều đáp ứng các tiêu chuẩn an toàn và chất lượng quốc tế khắt khe.') }}</p>
-                        </div>
-                    </div>
-                </div>
-                @endif
-
-                <div class="mt-8">
-                    <a href="{{ route('contact') }}" class="inline-flex items-center px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-orange-600 transition-all">
-                        Liên hệ tư vấn <span class="material-symbols-outlined ml-2">arrow_forward</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 <!-- Products Section -->
 @if($productCategories->count() > 0 || $featuredProducts->count() > 0)
 <section class="py-24 bg-white dark:bg-slate-900">
@@ -481,6 +412,75 @@
             <p class="text-slate-400">Đang cập nhật danh sách đối tác...</p>
         </div>
         @endif
+    </div>
+</section>
+
+<!-- About/Core Values Section -->
+<section class="py-24 bg-slate-50 dark:bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row items-center gap-16">
+            <div class="lg:w-1/2">
+                @if($aboutPage && $aboutPage->image)
+                <img alt="{{ $aboutPage->title ?? 'Về chúng tôi' }}" class="rounded-2xl shadow-2xl w-full" src="{{ asset('storage/' . $aboutPage->image) }}"/>
+                @elseif(setting('about_image'))
+                <img alt="Về chúng tôi" class="rounded-2xl shadow-2xl w-full" src="{{ asset('storage/' . setting('about_image')) }}"/>
+                @else
+                <img alt="Đội ngũ kỹ thuật" class="rounded-2xl shadow-2xl w-full" src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800"/>
+                @endif
+            </div>
+            <div class="lg:w-1/2">
+                <span class="text-primary font-bold uppercase tracking-widest text-sm mb-4 block">{{ setting('about_subtitle', 'Giá trị cốt lõi') }}</span>
+                <h2 class="font-display text-4xl font-extrabold mb-8 leading-tight">
+                    @if($aboutPage)
+                        {{ $aboutPage->title }}
+                    @else
+                        {{ setting('about_title', 'Thiết lập tiêu chuẩn vàng trong Dịch vụ Công nghiệp') }}
+                    @endif
+                </h2>
+
+                @if($aboutPage && $aboutPage->content)
+                <div class="prose dark:prose-invert max-w-none prose-h4:mt-0 prose-h4:mb-1">
+                    {!! $aboutPage->content !!}
+                </div>
+                @else
+                <div class="space-y-8">
+                    <div class="flex gap-6">
+                        <div class="shrink-0 w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-md">
+                            <span class="material-symbols-outlined text-primary">{{ setting('value1_icon', 'verified') }}</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-1">{{ setting('value1_title', 'Chuyên môn kỹ thuật vượt trội') }}</h4>
+                            <p class="text-slate-600 dark:text-slate-400">{{ setting('value1_description', 'Các kỹ sư của chúng tôi được đào tạo chính quy với nhiều năm kinh nghiệm trong hệ thống năng lượng.') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6">
+                        <div class="shrink-0 w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-md">
+                            <span class="material-symbols-outlined text-primary">{{ setting('value2_icon', 'support_agent') }}</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-1">{{ setting('value2_title', 'Hỗ trợ 24/7') }}</h4>
+                            <p class="text-slate-600 dark:text-slate-400">{{ setting('value2_description', 'Hạ tầng quan trọng không bao giờ nghỉ. Chúng tôi cũng vậy. Hỗ trợ luôn sẵn sàng khi bạn cần.') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6">
+                        <div class="shrink-0 w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-md">
+                            <span class="material-symbols-outlined text-primary">{{ setting('value3_icon', 'high_quality') }}</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-1">{{ setting('value3_title', 'Đảm bảo chất lượng cao cấp') }}</h4>
+                            <p class="text-slate-600 dark:text-slate-400">{{ setting('value3_description', 'Mọi linh kiện và dịch vụ đều đáp ứng các tiêu chuẩn an toàn và chất lượng quốc tế khắt khe.') }}</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                <div class="mt-8">
+                    <a href="{{ route('contact') }}" class="inline-flex items-center px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-orange-600 transition-all">
+                        Liên hệ tư vấn <span class="material-symbols-outlined ml-2">arrow_forward</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 @endsection
