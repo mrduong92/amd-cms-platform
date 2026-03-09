@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Bash(docker compose run:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(php artisan route:list 2>&1 | grep -i filemanager | head -30)",
+      "Bash(ls /var/www/nmtauto/docker/nginx/ 2>/dev/null && cat /var/www/nmtauto/docker/nginx/*.conf 2>/dev/null | head -80)",
+      "Bash(cat /var/www/nmtauto/docker/nginx/conf.d/*.conf 2>/dev/null)",
+      "Bash(php artisan config:show app 2>&1 | grep -i debug)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost/filemanager?type=image 2>/dev/null)",
+      "Bash(php artisan storage:link 2>&1)",
+      "Bash(php artisan view:cache 2>&1 | tail -5)",
+      "Bash(php -v && php-fpm8.4 -v 2>/dev/null || php-fpm8.3 -v 2>/dev/null || php-fpm -v 2>/dev/null)",
+      "Bash(php artisan config:clear 2>&1 | tail -3)"
     ]
   }
 }
