@@ -17,6 +17,10 @@
     @endif
 </div>
 
-<div class="zalo-chat-widget" data-oaid="3260407687001679684" data-welcome-message="Rất vui khi được hỗ trợ bạn!" data-autopopup="0" data-width="" data-height=""></div>
+@if(setting('social_zalo_oa_id'))
+<div class="zalo-chat-widget" data-oaid="{{ setting('social_zalo_oa_id') }}" data-welcome-message="Rất vui khi được hỗ trợ bạn!" data-autopopup="0" data-width="" data-height=""></div>
+@endif
 
+@if(setting('social_zalo_oa_id'))
 <script src="https://sp.zalo.me/plugins/sdk.js"></script>
+@endif
