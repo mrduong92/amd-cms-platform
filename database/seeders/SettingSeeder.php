@@ -163,12 +163,12 @@ class SettingSeeder extends Seeder
                 'order' => 3,
             ],
             [
-                'key' => 'social_zalo',
-                'value' => 'https://zalo.me/nmtauto',
-                'type' => 'url',
+                'key' => 'social_zalo_oa_id',
+                'value' => '',
+                'type' => 'text',
                 'group' => 'social',
-                'label' => 'Zalo',
-                'description' => 'Link Zalo OA',
+                'label' => 'Zalo OA ID',
+                'description' => 'ID của Zalo Official Account (dùng cho Zalo Chat Widget)',
                 'order' => 4,
             ],
             [
