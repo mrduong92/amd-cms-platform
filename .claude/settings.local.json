@@ -2,7 +2,25 @@
   "permissions": {
     "allow": [
       "Bash(docker compose run:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "WebFetch(domain:developers.facebook.com)",
+      "WebSearch",
+      "Bash(docker compose exec app ls /var/www/products.xlsx 2>/dev/null || echo \"Not found in container\")",
+      "Bash(docker compose exec app id && docker compose exec app sh -c \"ls -la /var/www/products.xlsx\")",
+      "Bash(docker compose exec app sh -c \"cat /var/www/products.xlsx | wc -c\")",
+      "Bash(docker compose exec app sh -c \"ls -la /var/www/ | head -20\")",
+      "Bash(docker compose exec app sh -c \"php -r \\\\\"echo file_exists\\('/var/www/products.xlsx'\\) ? 'exists' : 'not found';\\\\\"\")",
+      "Bash(docker compose exec app sh -c \"php -r \\\\\"echo is_readable\\('/var/www/products.xlsx'\\) ? 'readable' : 'not readable'; echo ' size:' . filesize\\('/var/www/products.xlsx'\\);\\\\\"\")",
+      "Bash(unzip -p products.xlsx xl/workbook.xml 2>/dev/null | grep -o 'name=\"[^\"]*\"')",
+      "Bash(unzip -p products.xlsx xl/sharedStrings.xml 2>/dev/null | sed 's/<[^>]*>//g' | tr '\\\\n' '|')",
+      "Bash(unzip -p products.xlsx \"xl/worksheets/sheet1.xml\" 2>/dev/null | sed 's/<[^>]*>//g' | tr '\\\\n' ' ' | sed 's/  */ /g')",
+      "Bash(unzip -p products.xlsx \"xl/worksheets/sheet1.xml\" 2>/dev/null | python3 -c \"\nimport sys, re, xml.etree.ElementTree as ET\n\ncontent = sys.stdin.read\\(\\)\nroot = ET.fromstring\\(content\\)\nns = {'m': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}\n\n# Get shared strings\nimport zipfile\nwith zipfile.ZipFile\\('/Users/macbook/Projects/nmtauto/products.xlsx'\\) as z:\n    ss_xml = z.read\\('xl/sharedStrings.xml'\\).decode\\('utf-8'\\)\nss_root = ET.fromstring\\(ss_xml\\)\nshared = [t.text or '' for t in ss_root.findall\\('.//m:t', ns\\)]\n\ndef cell_val\\(c\\):\n    t = c.get\\('t', ''\\)\n    v = c.find\\('m:v', ns\\)\n    if v is None: return ''\n    if t == 's': return shared[int\\(v.text\\)]\n    return v.text\n\nrows = root.findall\\('.//m:row', ns\\)\nfor row in rows:\n    cells = [cell_val\\(c\\) for c in row.findall\\('m:c', ns\\)]\n    print\\(' | '.join\\(cells\\)\\)\n\")",
+      "Bash(unzip -p products.xlsx \"xl/worksheets/sheet2.xml\" 2>/dev/null | python3 -c \"\nimport sys, xml.etree.ElementTree as ET, zipfile\n\ncontent = sys.stdin.read\\(\\)\nroot = ET.fromstring\\(content\\)\nns = {'m': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}\n\nwith zipfile.ZipFile\\('/Users/macbook/Projects/nmtauto/products.xlsx'\\) as z:\n    ss_xml = z.read\\('xl/sharedStrings.xml'\\).decode\\('utf-8'\\)\nss_root = ET.fromstring\\(ss_xml\\)\nshared = [t.text or '' for t in ss_root.findall\\('.//m:t', ns\\)]\n\ndef cell_val\\(c\\):\n    t = c.get\\('t', ''\\)\n    v = c.find\\('m:v', ns\\)\n    if v is None: return ''\n    if t == 's': return shared[int\\(v.text\\)]\n    return v.text\n\nrows = root.findall\\('.//m:row', ns\\)\nfor row in rows:\n    cells = [cell_val\\(c\\) for c in row.findall\\('m:c', ns\\)]\n    print\\(' | '.join\\(cells\\)\\)\n\")",
+      "Bash(docker compose exec app php -r \"\nrequire '/var/www/vendor/autoload.php';\n\\\\$app = require '/var/www/bootstrap/app.php';\n\\\\$app->make\\('Illuminate\\\\Contracts\\\\Console\\\\Kernel'\\)->bootstrap\\(\\);\n\n// Simulate what importExcel does\n\\\\$path = '/var/www/products.xlsx';\n\\\\$zip = new ZipArchive\\(\\);\nif \\(\\\\$zip->open\\(\\\\$path\\) !== true\\) { echo 'Cannot open zip'; exit; }\n\\\\$xml = \\\\$zip->getFromName\\('xl/workbook.xml'\\);\n\\\\$zip->close\\(\\);\npreg_match_all\\('/name=\\\\\"\\([^\\\\\"]+\\)\\\\\"/', \\\\$xml, \\\\$m\\);\n\\\\$sheets = \\\\$m[1];\necho 'Sheet names: ' . implode\\(', ', \\\\$sheets\\) . PHP_EOL;\n\n// Now test actual import\n\\\\$import = new App\\\\Imports\\\\ProductImport\\(\\\\$sheets\\);\nMaatwebsite\\\\Excel\\\\Facades\\\\Excel::import\\(\\\\$import, \\\\$path\\);\necho 'Imported: ' . \\\\$import->getImportedCount\\(\\) . PHP_EOL;\necho 'Skipped: ' . \\\\$import->getSkippedCount\\(\\) . PHP_EOL;\n\" 2>&1 | grep -v \"^$\" | head -40)",
+      "Bash(cp /tmp/test_import.php /Users/macbook/Projects/nmtauto/test_import.php && docker compose exec app php test_import.php 2>&1 | grep -v \"^$\")",
+      "Bash(docker compose exec app php test_import.php 2>&1 | grep -v \"^$\")",
+      "Bash(unzip -l /Users/macbook/Projects/nmtauto/products.xlsx | head -20)",
+      "Bash(docker compose exec app php test_import.php 2>&1)"
     ]
   }
 }

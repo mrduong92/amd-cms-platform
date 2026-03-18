@@ -40,6 +40,11 @@ class XlsxImporter
 
                 $headers = $rows[0]; // first row = column headers
 
+                // Detect format:
+                // Old format: A=STT, B=SKU, C=Name, D+=Specs
+                // New format: A=SKU, B=Name, C=description (e.g. "Xe áp dụng"), no specs
+                $isNewFormat = strtolower(trim($headers[0] ?? '')) !== 'stt';
+
                 [$created, $category] = $this->findOrCreateCategory($categoryName);
                 if ($created) {
                     $newCats++;
@@ -47,14 +52,21 @@ class XlsxImporter
 
                 // Data starts at row index 1
                 for ($r = 1; $r < count($rows); $r++) {
-                    $row  = $rows[$r];
-                    $name = trim($row[2] ?? '');
+                    $row = $rows[$r];
+
+                    if ($isNewFormat) {
+                        $sku  = trim($row[0] ?? '');
+                        $name = trim($row[1] ?? '');
+                        $desc = trim($row[2] ?? '');
+                    } else {
+                        $sku  = trim($row[1] ?? '');
+                        $name = trim($row[2] ?? '');
+                        $desc = '';
+                    }
 
                     if ($name === '') {
                         continue;
                     }
-
-                    $sku = trim($row[1] ?? '');
 
                     if ($sku !== '' && Product::where('sku', $sku)->exists()) {
                         $skipped++;
@@ -65,24 +77,27 @@ class XlsxImporter
                         'category_id' => $category->id,
                         'name'        => $name,
                         'sku'         => $sku ?: null,
+                        'description' => $desc ?: null,
                         'is_active'   => true,
                         'is_featured' => false,
                         'order'       => 0,
                     ]);
 
-                    // Columns 3+ become product specs
-                    $specOrder = 0;
-                    for ($c = 3; $c < count($headers); $c++) {
-                        $specName  = trim($headers[$c] ?? '');
-                        $specValue = trim((string) ($row[$c] ?? ''));
+                    if (!$isNewFormat) {
+                        // Columns 3+ become product specs
+                        $specOrder = 0;
+                        for ($c = 3; $c < count($headers); $c++) {
+                            $specName  = trim($headers[$c] ?? '');
+                            $specValue = trim((string) ($row[$c] ?? ''));
 
-                        if ($specName !== '' && $specValue !== '') {
-                            ProductSpec::create([
-                                'product_id' => $product->id,
-                                'spec_name'  => $specName,
-                                'spec_value' => $specValue,
-                                'order'      => $specOrder++,
-                            ]);
+                            if ($specName !== '' && $specValue !== '') {
+                                ProductSpec::create([
+                                    'product_id' => $product->id,
+                                    'spec_name'  => $specName,
+                                    'spec_value' => $specValue,
+                                    'order'      => $specOrder++,
+                                ]);
+                            }
                         }
                     }
 
