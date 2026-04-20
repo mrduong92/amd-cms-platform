@@ -1,5 +1,5 @@
 {{-- Floating CTA Buttons (Call + Zalo) --}}
-<div class="fixed z-50 flex gap-3" style="right: 8rem; bottom: 3rem;">
+<div class="fixed z-50 flex gap-3" style="right: 1rem; bottom: 3rem;">
     {{-- Call Button --}}
     @if(setting('contact_phone') || setting('contact_hotline'))
     <a href="tel:{{ setting('contact_hotline') ?: setting('contact_phone') }}" class="group relative" title="Gọi ngay: {{ setting('contact_hotline') ?: setting('contact_phone') }}">
