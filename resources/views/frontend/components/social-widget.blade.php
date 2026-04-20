@@ -15,12 +15,23 @@
         </div>
     </a>
     @endif
+
+    {{-- Zalo Button (simple link, shown when widget is off) --}}
+    @if(setting('social_zalo_oa_id') && !config('common.zalo_widget'))
+    <a href="{{ setting('social_zalo_oa_id') }}" target="_blank" rel="noopener" class="group relative" title="Chat Zalo">
+        <div class="relative">
+            <span class="absolute inset-0 rounded-full bg-blue-500 animate-ping opacity-75"></span>
+            <div class="relative w-14 h-14 bg-blue-500 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-600 hover:scale-110 transition-all duration-300">
+                <img src="{{ asset('images/zalo-icon.png') }}" alt="Zalo" class="w-8 h-8" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <span class="text-white font-bold text-sm" style="display:none">Zalo</span>
+            </div>
+        </div>
+    </a>
+    @endif
 </div>
 
-@if(setting('social_zalo_oa_id'))
+{{-- Zalo OA Chat Widget (shown when widget is on) --}}
+@if(setting('social_zalo_oa_id') && config('common.zalo_widget'))
 <div class="zalo-chat-widget" data-oaid="{{ setting('social_zalo_oa_id') }}" data-welcome-message="Rất vui khi được hỗ trợ bạn!" data-autopopup="0" data-width="" data-height=""></div>
-@endif
-
-@if(setting('social_zalo_oa_id'))
 <script src="https://sp.zalo.me/plugins/sdk.js"></script>
 @endif
