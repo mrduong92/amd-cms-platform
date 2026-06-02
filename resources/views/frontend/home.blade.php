@@ -6,7 +6,20 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <style>
     .hero-swiper {
-        height: 85vh;
+        height: 75vh;
+        min-height: 480px;
+        max-height: 700px;
+    }
+    @media (max-width: 1024px) {
+        .hero-swiper {
+            height: 60vh;
+        }
+    }
+    @media (max-width: 768px) {
+        .hero-swiper {
+            height: 50vh;
+            min-height: 400px;
+        }
     }
     .hero-swiper .swiper-slide {
         position: relative;
